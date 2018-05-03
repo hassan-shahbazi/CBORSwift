@@ -200,4 +200,24 @@ class CBORSwiftTests: XCTestCase {
                         0x20, 0x61, 0x20, 0x6D, 0x6F, 0x72, 0x65, 0x20, 0x63, 0x6F,
                         0x6D, 0x70, 0x6C, 0x65, 0x78, 0x20, 0x74, 0x65, 0x73, 0x74], encoded)
     }
+
+    //MARK:- Array encoding
+    func test_2_encodeArray() {
+        var encoded = CBOR.encode(array: ["item0"])
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0x81], encoded)
+        
+        encoded = CBOR.encode(array: ["item0", "item1", "item2"])
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0x83], encoded)
+        
+        var array = NSArray()
+        for counter in 0..<47 {
+            array = array.adding("item\(counter)") as NSArray
+        }
+        encoded = CBOR.encode(array: array)
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0x98, 0x2F], encoded)
+    }
+
 }

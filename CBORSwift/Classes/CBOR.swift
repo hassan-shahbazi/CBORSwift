@@ -37,9 +37,11 @@ class CBOR: NSObject {
         return Encoder.encode(value: value, header: major.get()).data?.binary
     }
     
-    public class func encode(array value: NSArray) {
+    public class func encode(array value: NSArray) -> [UInt8]? {
         let major = MajorTypes()
         major.set(type: .major4)
+        
+        return Encoder.encode(value: value, header: major.get()).data?.binary
     }
     
     public class func encode(map value: NSDictionary) {

@@ -40,4 +40,19 @@ class Encoder: NSObject {
         
         return headerData.appending(strData)
     }
+    
+    public class func encode(value: NSArray, header: Data) -> String {
+        var encoded = [UInt8]()
+        encoded.append(contentsOf: header.binary)
+        
+        var rawBytes = [UInt8]()
+        if value.count >= 0 && value.count <= 23 {}
+        else if value.count >= 24 && value.count <= 255 { rawBytes = 24.binary }
+        else if value.count >= 256 && value.count <= 65535 { rawBytes = 25.binary }
+        else if value.count >= 65536 && value.count <= 4294967295 { rawBytes = 26.binary }
+        rawBytes.append(contentsOf: value.count.binary)
+        
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        return Data(bytes: encoded).decimal.hex
+    }
 }
