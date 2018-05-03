@@ -203,21 +203,33 @@ class CBORSwiftTests: XCTestCase {
 
     //MARK:- Array encoding
     func test_2_encodeArray() {
-        var encoded = CBOR.encode(array: ["item0"])
+        var encoded = CBOR.encode(array: ["hello"])
         XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x81], encoded)
+        XCTAssertEqual([0x81, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F], encoded)
         
-        encoded = CBOR.encode(array: ["item0", "item1", "item2"])
+        encoded = CBOR.encode(array: ["hello", "my", "friend"])
         XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x83], encoded)
+        XCTAssertEqual([0x83, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
+                        0x62, 0x6D, 0x79,
+                        0x66, 0x66, 0x72, 0x69, 0x65, 0x6E, 0x64], encoded)
         
-        var array = NSArray()
-        for counter in 0..<47 {
-            array = array.adding("item\(counter)") as NSArray
+        var array = [String]()
+        for _ in 0..<8 {
+            array.append("hello")
+            array.append("my")
+            array.append("friend")
         }
-        encoded = CBOR.encode(array: array)
+        
+        var hexArray:[UInt8] = [0x98, 0x18]
+        for _ in 0..<8 {
+            hexArray.append(contentsOf: [0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F])
+            hexArray.append(contentsOf: [0x62, 0x6D, 0x79])
+            hexArray.append(contentsOf: [0x66, 0x66, 0x72, 0x69, 0x65, 0x6E, 0x64])
+        }
+        
+        encoded = CBOR.encode(array: array as NSArray)
         XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x98, 0x2F], encoded)
+        XCTAssertEqual(hexArray, encoded)
     }
     
     //MARK: Map encoding

@@ -13,10 +13,7 @@ class Encoder: NSObject {
         encoded.append(contentsOf: header.binary)
         
         var rawBytes = [UInt8]()
-        if value.intValue >= 0 && value.intValue <= 23 {}
-        else if value.intValue >= 24 && value.intValue <= 255 { rawBytes = 24.binary }
-        else if value.intValue >= 256 && value.intValue <= 65535 { rawBytes = 25.binary }
-        else if value.intValue >= 65536 && value.intValue <= 4294967295 { rawBytes = 26.binary }
+        makeRawByte(bytes: &rawBytes, measure: value.intValue)
         rawBytes.append(contentsOf: value.intValue.binary)
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
         
@@ -28,10 +25,7 @@ class Encoder: NSObject {
         encoded.append(contentsOf: header.binary)
         
         var rawBytes = [UInt8]()
-        if value.count >= 0 && value.count <= 23 {}
-        else if value.count >= 24 && value.count <= 255 { rawBytes = 24.binary }
-        else if value.count >= 256 && value.count <= 65535 { rawBytes = 25.binary }
-        else if value.count >= 65536 && value.count <= 4294967295 { rawBytes = 26.binary }
+        makeRawByte(bytes: &rawBytes, measure: value.count)
         rawBytes.append(contentsOf: value.count.binary)
         
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
@@ -46,14 +40,21 @@ class Encoder: NSObject {
         encoded.append(contentsOf: header.binary)
         
         var rawBytes = [UInt8]()
-        if value.count >= 0 && value.count <= 23 {}
-        else if value.count >= 24 && value.count <= 255 { rawBytes = 24.binary }
-        else if value.count >= 256 && value.count <= 65535 { rawBytes = 25.binary }
-        else if value.count >= 65536 && value.count <= 4294967295 { rawBytes = 26.binary }
+        makeRawByte(bytes: &rawBytes, measure: value.count)
         rawBytes.append(contentsOf: value.count.binary)
         
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        return Data(bytes: encoded).decimal.hex
+        var data  = Data(bytes: encoded).decimal.hex
+        
+        for item in value {
+            if let item = item as? String {
+                let major = MajorTypes()
+                major.set(type: .major3)
+                
+                data.append(encode(value: item, header: major.get()))
+            }
+        }
+        return data
     }
     
     public class func encode(value: NSDictionary, header: Data) -> String {
@@ -61,13 +62,19 @@ class Encoder: NSObject {
         encoded.append(contentsOf: header.binary)
         
         var rawBytes = [UInt8]()
-        if value.allKeys.count >= 0 && value.allKeys.count <= 23 {}
-        else if value.allKeys.count >= 24 && value.allKeys.count <= 255 { rawBytes = 24.binary }
-        else if value.allKeys.count >= 256 && value.allKeys.count <= 65535 { rawBytes = 25.binary }
-        else if value.allKeys.count >= 65536 && value.allKeys.count <= 4294967295 { rawBytes = 26.binary }
+        makeRawByte(bytes: &rawBytes, measure: value.allKeys.count)
         rawBytes.append(contentsOf: value.allKeys.count.binary)
         
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
         return Data(bytes: encoded).decimal.hex
+    }
+}
+
+private extension Encoder {
+    class func makeRawByte(bytes: inout [UInt8], measure: Int) {
+        if measure >= 0 && measure <= 23 {}
+        else if measure >= 24 && measure <= 255 { bytes = 24.binary }
+        else if measure >= 256 && measure <= 65535 { bytes = 25.binary }
+        else if measure >= 65536 && measure <= 4294967295 { bytes = 26.binary }
     }
 }
