@@ -55,4 +55,19 @@ class Encoder: NSObject {
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
         return Data(bytes: encoded).decimal.hex
     }
+    
+    public class func encode(value: NSDictionary, header: Data) -> String {
+        var encoded = [UInt8]()
+        encoded.append(contentsOf: header.binary)
+        
+        var rawBytes = [UInt8]()
+        if value.allKeys.count >= 0 && value.allKeys.count <= 23 {}
+        else if value.allKeys.count >= 24 && value.allKeys.count <= 255 { rawBytes = 24.binary }
+        else if value.allKeys.count >= 256 && value.allKeys.count <= 65535 { rawBytes = 25.binary }
+        else if value.allKeys.count >= 65536 && value.allKeys.count <= 4294967295 { rawBytes = 26.binary }
+        rawBytes.append(contentsOf: value.allKeys.count.binary)
+        
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        return Data(bytes: encoded).decimal.hex
+    }
 }

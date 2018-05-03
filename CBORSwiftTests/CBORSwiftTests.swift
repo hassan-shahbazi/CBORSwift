@@ -219,5 +219,16 @@ class CBORSwiftTests: XCTestCase {
         XCTAssertNotNil(encoded)
         XCTAssertEqual([0x98, 0x2F], encoded)
     }
+    
+    //MARK: Map encoding
+    func test_2_encodeMap() {
+        var encoded = CBOR.encode(map: ["item0": "value0"])
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0xA1], encoded)
+        
+        encoded = CBOR.encode(map: ["item0": "value0", "item1": "value1", "item2": "value2", "item3": "value3"])
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0xA4], encoded)
+    }
 
 }
