@@ -179,4 +179,25 @@ class CBORSwiftTests: XCTestCase {
         XCTAssertEqual([0x3A, 0x02, 0x8F, 0x5A, 0xAE], encoded)
     }
 
+    //MARK:- Byte string encoding
+    func test_2_encodeByteString() {
+//        CBOR.encode(byteString: <#T##[String]#>)
+    }
+    
+    //MARK:- Text string encoding
+    func test_2_encodeTextString() {
+        var encoded = CBOR.encode(textString: "hello")
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F], encoded)
+        
+        encoded = CBOR.encode(textString: "name")
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0x64, 0x6E, 0x61, 0x6D, 0x65], encoded)
+        
+        encoded = CBOR.encode(textString: "let's do a more complex test")
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0x78, 0x1C, 0x6C, 0x65, 0x74, 0x27, 0x73, 0x20, 0x64, 0x6F,
+                        0x20, 0x61, 0x20, 0x6D, 0x6F, 0x72, 0x65, 0x20, 0x63, 0x6F,
+                        0x6D, 0x70, 0x6C, 0x65, 0x78, 0x20, 0x74, 0x65, 0x73, 0x74], encoded)
+    }
 }

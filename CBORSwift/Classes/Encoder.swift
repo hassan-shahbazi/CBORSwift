@@ -8,11 +8,36 @@
 
 class Encoder: NSObject {
     
-    public class func encode(value: Data, header: Data) -> String {
+    public class func encode(value: NSNumber, header: Data) -> String {
         var encoded = [UInt8]()
         encoded.append(contentsOf: header.binary)
-        encoded.append(contentsOf: [UInt8](value.binary[3..<value.count]))
         
-        return Data(bytes: encoded).hex
+        var rawBytes = [UInt8]()
+        if value.intValue >= 0 && value.intValue <= 23 {}
+        else if value.intValue >= 24 && value.intValue <= 255 { rawBytes = 24.binary }
+        else if value.intValue >= 256 && value.intValue <= 65535 { rawBytes = 25.binary }
+        else if value.intValue >= 65536 && value.intValue <= 4294967295 { rawBytes = 26.binary }
+        rawBytes.append(contentsOf: value.intValue.binary)
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        
+        return Data(bytes: encoded).decimal.hex
+    }
+    
+    public class func encode(value: String, header: Data) -> String {
+        var encoded = [UInt8]()
+        encoded.append(contentsOf: header.binary)
+        
+        var rawBytes = [UInt8]()
+        if value.count >= 0 && value.count <= 23 {}
+        else if value.count >= 24 && value.count <= 255 { rawBytes = 24.binary }
+        else if value.count >= 256 && value.count <= 65535 { rawBytes = 25.binary }
+        else if value.count >= 65536 && value.count <= 4294967295 { rawBytes = 26.binary }
+        rawBytes.append(contentsOf: value.count.binary)
+        
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        let headerData  = Data(bytes: encoded).decimal.hex
+        let strData     = Data(bytes: value.hex.data!.binary).hex
+        
+        return headerData.appending(strData)
     }
 }

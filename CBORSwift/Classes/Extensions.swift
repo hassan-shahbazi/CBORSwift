@@ -25,13 +25,21 @@ extension Data {
     }
     
     public var hex: String {
-        return String(self.decimal, radix: 16).uppercased()
+        var str = ""
+        for byte in self.binary {
+            str = str.appendingFormat("%02x", UInt(byte))
+        }
+        return str
     }
 }
 
 extension Int {
     public var binary: [UInt8] {
         return String(self, radix: 2).bits
+    }
+    
+    public var hex: String {
+        return String(self, radix: 16).uppercased()
     }
 }
 
@@ -79,7 +87,10 @@ extension String {
             var num = UInt8(byteString, radix: 16)
             data?.append(&num, length: 1)
         }
-        
         return data as Data?
+    }
+    
+    public var hex: String {
+        return self.utf8.map{ $0 }.reduce("") { $0 + String($1, radix: 16, uppercase: true) }
     }
 }
