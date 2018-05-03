@@ -10,6 +10,10 @@
 		179837AB209A1A2E0048DCD2 /* CBORSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 179837A1209A1A2E0048DCD2 /* CBORSwift.framework */; };
 		179837B0209A1A2E0048DCD2 /* CBORSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179837AF209A1A2E0048DCD2 /* CBORSwiftTests.swift */; };
 		179837B2209A1A2E0048DCD2 /* CBORSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 179837A4209A1A2E0048DCD2 /* CBORSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		179837BC209A1CAD0048DCD2 /* MajorTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179837BB209A1CAD0048DCD2 /* MajorTypes.swift */; };
+		179837BF209A22310048DCD2 /* CBOR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179837BE209A22310048DCD2 /* CBOR.swift */; };
+		179837C1209A2A490048DCD2 /* Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179837C0209A2A490048DCD2 /* Encoder.swift */; };
+		179837C3209A502F0048DCD2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179837C2209A502F0048DCD2 /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +33,10 @@
 		179837AA209A1A2E0048DCD2 /* CBORSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CBORSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		179837AF209A1A2E0048DCD2 /* CBORSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBORSwiftTests.swift; sourceTree = "<group>"; };
 		179837B1209A1A2E0048DCD2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		179837BB209A1CAD0048DCD2 /* MajorTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajorTypes.swift; sourceTree = "<group>"; };
+		179837BE209A22310048DCD2 /* CBOR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBOR.swift; sourceTree = "<group>"; };
+		179837C0209A2A490048DCD2 /* Encoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encoder.swift; sourceTree = "<group>"; };
+		179837C2209A502F0048DCD2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +79,7 @@
 		179837A3209A1A2E0048DCD2 /* CBORSwift */ = {
 			isa = PBXGroup;
 			children = (
+				179837BD209A1CB30048DCD2 /* Classes */,
 				179837A4209A1A2E0048DCD2 /* CBORSwift.h */,
 				179837A5209A1A2E0048DCD2 /* Info.plist */,
 			);
@@ -84,6 +93,17 @@
 				179837B1209A1A2E0048DCD2 /* Info.plist */,
 			);
 			path = CBORSwiftTests;
+			sourceTree = "<group>";
+		};
+		179837BD209A1CB30048DCD2 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				179837BE209A22310048DCD2 /* CBOR.swift */,
+				179837C0209A2A490048DCD2 /* Encoder.swift */,
+				179837BB209A1CAD0048DCD2 /* MajorTypes.swift */,
+				179837C2209A502F0048DCD2 /* Extensions.swift */,
+			);
+			path = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,6 +168,7 @@
 				TargetAttributes = {
 					179837A0209A1A2E0048DCD2 = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 0930;
 					};
 					179837A9209A1A2E0048DCD2 = {
 						CreatedOnToolsVersion = 9.3;
@@ -194,6 +215,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				179837BC209A1CAD0048DCD2 /* MajorTypes.swift in Sources */,
+				179837BF209A22310048DCD2 /* CBOR.swift in Sources */,
+				179837C1209A2A490048DCD2 /* Encoder.swift in Sources */,
+				179837C3209A502F0048DCD2 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +364,7 @@
 		179837B6209A1A2E0048DCD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -356,6 +382,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hassaniiii.CBORSwift;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -364,6 +391,7 @@
 		179837B7209A1A2E0048DCD2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -389,6 +417,7 @@
 		179837B9209A1A2E0048DCD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 92TDT63R6P;
 				INFOPLIST_FILE = CBORSwiftTests/Info.plist;
@@ -407,6 +436,7 @@
 		179837BA209A1A2E0048DCD2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 92TDT63R6P;
 				INFOPLIST_FILE = CBORSwiftTests/Info.plist;
