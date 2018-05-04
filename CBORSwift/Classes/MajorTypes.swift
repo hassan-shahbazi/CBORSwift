@@ -36,7 +36,7 @@ class MajorTypes: NSObject {
     }
     
     private func prepareBits() -> [UInt8] {
-        if let bits = type?.rawValue.bits {
+        if let bits = type?.rawValue.bytes {
             return [UInt8](bits[bits.count-3..<bits.count])
         }
         return [UInt8](repeating: 0, count: 3)

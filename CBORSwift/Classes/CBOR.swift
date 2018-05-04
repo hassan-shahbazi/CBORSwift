@@ -45,6 +45,6 @@ extension CBOR: CBOREncoder {
         let type = MajorTypes()
         type.set(type: major)
         
-        return value.encode(major: type.get()).data?.binary
+        return value.encode(major: type.get()).data?.bytes
     }
 }

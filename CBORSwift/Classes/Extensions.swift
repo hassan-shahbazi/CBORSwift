@@ -9,16 +9,16 @@
 import Foundation
 
 extension Data {
-    public var binary: [UInt8] {
+    public var bytes: [UInt8] {
         var bytes = [UInt8](repeating:0, count:self.count)
         self.copyBytes(to: &bytes, count: self.count)
         
         return [UInt8](bytes[0..<bytes.count])
     }
     
-    public var decimal: Int {
+    public var binary_decimal: Int {
         var str = ""
-        for bit in self.binary {
+        for bit in self.bytes {
             str.append("\(bit)")
         }
         return Int(str, radix: 2)!
@@ -26,7 +26,7 @@ extension Data {
     
     public var hex: String {
         var str = ""
-        for byte in self.binary {
+        for byte in self.bytes {
             str = str.appendingFormat("%02x", UInt(byte))
         }
         return str
@@ -34,8 +34,8 @@ extension Data {
 }
 
 extension Int {
-    public var binary: [UInt8] {
-        return String(self, radix: 2).bits
+    public var decimal_binary: [UInt8] {
+        return String(self, radix: 2).bytes
     }
     
     public var hex: String {
@@ -60,7 +60,7 @@ extension String {
         return String(self[start..<end])
     }
     
-    public var bits: [UInt8] {
+    public var bytes: [UInt8] {
         var bits = [UInt8]()
         for index in 0..<self.count {
             let chr = self[index..<index+1]
@@ -98,8 +98,12 @@ extension String {
         return self.utf8.map{ $0 }.reduce("") { $0 + String($1, radix: 16, uppercase: true) }
     }
     
-    public var decimal: Int {
+    public var hex_decimal: Int {
         return Int(self, radix: 16)!
+    }
+    
+    public var hex_binary: [UInt8] {
+        return String(Int(self, radix: 16)!, radix: 2).bytes
     }
 }
 
@@ -110,12 +114,20 @@ extension NSString {
 }
 
 extension Array where Element == UInt8 {
-    public var decimal: Int {
+    public var hex_decimal: Int {
         var str = ""
         for bit in self {
             str.append("\(bit)")
         }
         return Int(str, radix: 16)!
+    }
+    
+    public var binary_decimal: Int {
+        var str = ""
+        for bit in self {
+            str.append("\(bit)")
+        }
+        return Int(str, radix: 2)!
     }
 }
 

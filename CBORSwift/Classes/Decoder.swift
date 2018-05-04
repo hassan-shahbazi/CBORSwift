@@ -8,12 +8,16 @@
 
 class Decoder: NSObject {
     public class func decode(value: [UInt8]) -> NSObject {
-        let header = value[0]
-        var decoded = NSObject()
+        let header  = value[0]
+        let body    = [UInt8](value[1..<value.count])
         
+        var decoded = NSObject()
         if let type = extractMajorType(Int(header)) {
             if type == .major0 {
-                decoded = Decoder.DecodeNumber(data: value)
+                decoded = Decoder.DecodeNumber(header: header, body: body)
+            }
+            if type == .major1 {
+//                decoded = Decoder.DecodeNumber(data: value)
             }
         }
         return decoded
@@ -21,25 +25,24 @@ class Decoder: NSObject {
     
     private class func extractMajorType(_ header: Int) -> MajorType? {
         let major = MajorTypes()
-        return major.identify(header.binary)
+        return major.identify(header.decimal_binary)
     }
     
 }
 
 extension Decoder {
-    private class func DecodeNumber(data: [UInt8]) -> NSNumber {
-        let valueLen = Int(data[0])
+    private class func DecodeNumber(header: UInt8, body: [UInt8]) -> NSNumber {
+        var value = [header]
         
-        var value = [UInt8](data[0...0])
-        if valueLen == 24 {
-            value = [UInt8](data[1...1])
+        if Int(header) == 24 {
+            value = [UInt8](body[0...0])
         }
-        if valueLen == 25 {
-            value = [UInt8](data[1...2])
+        else if Int(header) == 25 {
+            value = [UInt8](body[0...1])
         }
-        if valueLen == 26 {
-            value = [UInt8](data[1...4])
+        else if Int(header) == 26 {
+            value = [UInt8](body[0...3])
         }
-        return NSNumber(value: Data(bytes: value).hex.decimal)
+        return NSNumber(value: Data(bytes: value).hex.hex_decimal)
     }
 }

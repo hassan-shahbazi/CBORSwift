@@ -113,5 +113,41 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertNotNil(decoded)
         XCTAssertEqual(42949295, (decoded as? NSNumber)?.intValue)
     }
-
+    
+    //MARK:- Negative integer encoding
+    func test_2_decodeSimpleNeg() {
+        var decoded = CBOR.decode(integer: [0x20])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-1, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x26])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-7, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x2F])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-16, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x37])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-24, (decoded as? NSNumber)?.intValue)
+    }
+    
+    func test_3_decodeStage1Neg() {
+        var decoded = CBOR.decode(integer: [0x38, 0x18])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-25, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x38, 0x5F])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-96, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x38, 0x9F])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-160, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x38, 0xFF])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-256, (decoded as? NSNumber)?.intValue)
+    }
 }
