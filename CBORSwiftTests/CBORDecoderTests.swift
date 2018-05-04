@@ -150,4 +150,32 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertNotNil(decoded)
         XCTAssertEqual(-256, (decoded as? NSNumber)?.intValue)
     }
+    
+    func test_4_decodeStage2Neg() {
+        var decoded = CBOR.decode(integer: [0x39, 0x01, 0x00])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-257, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x39, 0x01, 0x7D])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-382, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x39, 0x0D, 0x63])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-3428, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x39, 0xFF, 0xDB])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-65500, (decoded as? NSNumber)?.intValue)
+    }
+    
+    func test_5_decodeStage3Neg() {
+        var decoded = CBOR.decode(integer: [0x3A, 0x00, 0x01, 0x00, 0x00])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-65537, (decoded as? NSNumber)?.intValue)
+        
+        decoded = CBOR.decode(integer: [0x3A, 0x02, 0x8F, 0x5A, 0xAE])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(-42949295, (decoded as? NSNumber)?.intValue)
+    }
 }

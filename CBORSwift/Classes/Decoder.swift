@@ -17,7 +17,8 @@ class Decoder: NSObject {
                 decoded = Decoder.DecodeNumber(header: header, body: body)
             }
             if type == .major1 {
-//                decoded = Decoder.DecodeNumber(data: value)
+                let neg = Decoder.DecodeNumber(header: header, body: body).intValue
+                decoded = NSNumber(value: (neg + 1) * -1)
             }
         }
         return decoded
@@ -32,15 +33,15 @@ class Decoder: NSObject {
 
 extension Decoder {
     private class func DecodeNumber(header: UInt8, body: [UInt8]) -> NSNumber {
-        var value = [header]
+        var value = [header % 32]
         
-        if Int(header) == 24 {
+        if Int(header) % 32 == 24 {
             value = [UInt8](body[0...0])
         }
-        else if Int(header) == 25 {
+        else if Int(header) % 32 == 25 {
             value = [UInt8](body[0...1])
         }
-        else if Int(header) == 26 {
+        else if Int(header) % 32 == 26 {
             value = [UInt8](body[0...3])
         }
         return NSNumber(value: Data(bytes: value).hex.hex_decimal)
