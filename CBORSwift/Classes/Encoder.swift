@@ -5,28 +5,11 @@
 //  Created by Hassaniiii on 5/2/18.
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
-
-class Encoder: NSObject {
-    
-    public class func encode(value: Any, major: MajorTypes) -> String {
-        let major = major.get()
-        if let value = value as? NSNumber {
-            return value.encode(major: major)
-        }
-        if let value = value as? String {
-            return value.encode(major: major)
-        }
-        if let value = value as? NSArray {
-            return value.encode(major: major)
-        }
-        if let value = value as? NSDictionary {
-            return value.encode(major: major)
-        }
-        return ""
-    }
+protocol CBOREncoder {
+    static func encode(value: NSObject, major: MajorType) -> [UInt8]?
 }
 
-private extension Encoder {
+class Encoder: NSObject {
     class func makeRawByte(bytes: inout [UInt8], measure: Int) {
         if measure >= 0 && measure <= 23 {}
         else if measure >= 24 && measure <= 255 { bytes = 24.binary }
@@ -62,8 +45,14 @@ private extension Encoder {
     }
 }
 
+extension NSObject: Any {
+    @objc internal func encode(major: Data) -> String {
+        return self.encode(major: major)
+    }
+}
+
 extension NSNumber {
-    public func encode(major: Data) -> String {
+    @objc override func encode(major: Data) -> String {
         var encoded = major.binary
 
         var rawBytes = [UInt8]()
@@ -75,13 +64,13 @@ extension NSNumber {
     }
 }
 
-extension String {
-    public func encode(major: Data) -> String {
+extension NSString {
+    @objc override func encode(major: Data) -> String {
         var encoded = major.binary
         
         var rawBytes = [UInt8]()
-        Encoder.makeRawByte(bytes: &rawBytes, measure: self.count)
-        rawBytes.append(contentsOf: self.count.binary)
+        Encoder.makeRawByte(bytes: &rawBytes, measure: self.length)
+        rawBytes.append(contentsOf: self.length.binary)
         
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
         let headerData  = Data(bytes: encoded).decimal.hex
@@ -92,7 +81,7 @@ extension String {
 }
 
 extension NSArray {
-    public func encode(major: Data) -> String {
+    @objc override func encode(major: Data) -> String {
         var encoded = major.binary
         
         var rawBytes = [UInt8]()
@@ -113,7 +102,7 @@ extension NSArray {
 }
 
 extension NSDictionary {
-    public func encode(major: Data) -> String {
+    @objc override func encode(major: Data) -> String {
         var encoded = major.binary
         
         var rawBytes = [UInt8]()

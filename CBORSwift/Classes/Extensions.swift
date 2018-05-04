@@ -99,6 +99,12 @@ extension String {
     }
 }
 
+extension NSString {
+    public var hex: String {
+        return String(self).utf8.map{ $0 }.reduce("") { $0 + String($1, radix: 16, uppercase: true) }
+    }
+}
+
 extension Dictionary where Value: Comparable, Key: Comparable {
     var valueKeySorted: [(Key, Value)] {
         return sorted {
