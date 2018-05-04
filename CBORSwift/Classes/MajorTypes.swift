@@ -27,6 +27,14 @@ class MajorTypes: NSObject {
         return Data(bytes: prepareBits())
     }
     
+    public func identify(_ type: [UInt8]) -> MajorType? {
+        var typeStr = ""
+        for bit in type[0..<3] {
+            typeStr.append("\(bit)")
+        }
+        return MajorType(rawValue: typeStr)
+    }
+    
     private func prepareBits() -> [UInt8] {
         if let bits = type?.rawValue.bits {
             return [UInt8](bits[bits.count-3..<bits.count])

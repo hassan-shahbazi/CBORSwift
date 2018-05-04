@@ -97,11 +97,25 @@ extension String {
     public var hex: String {
         return self.utf8.map{ $0 }.reduce("") { $0 + String($1, radix: 16, uppercase: true) }
     }
+    
+    public var decimal: Int {
+        return Int(self, radix: 16)!
+    }
 }
 
 extension NSString {
     public var hex: String {
         return String(self).utf8.map{ $0 }.reduce("") { $0 + String($1, radix: 16, uppercase: true) }
+    }
+}
+
+extension Array where Element == UInt8 {
+    public var decimal: Int {
+        var str = ""
+        for bit in self {
+            str.append("\(bit)")
+        }
+        return Int(str, radix: 16)!
     }
 }
 
