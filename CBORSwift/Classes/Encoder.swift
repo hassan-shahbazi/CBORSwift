@@ -8,97 +8,8 @@
 
 class Encoder: NSObject {
     
-    public class func encode(value: NSNumber, header: Data) -> String {
-        var encoded = [UInt8]()
-        encoded.append(contentsOf: header.binary)
+    internal class func Encode(value: Any, major: MajorType) {
         
-        var rawBytes = [UInt8]()
-        makeRawByte(bytes: &rawBytes, measure: value.intValue)
-        rawBytes.append(contentsOf: value.intValue.binary)
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        
-        return Data(bytes: encoded).decimal.hex
-    }
-    
-    public class func encode(value: String, header: Data) -> String {
-        var encoded = [UInt8]()
-        encoded.append(contentsOf: header.binary)
-        
-        var rawBytes = [UInt8]()
-        makeRawByte(bytes: &rawBytes, measure: value.count)
-        rawBytes.append(contentsOf: value.count.binary)
-        
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        let headerData  = Data(bytes: encoded).decimal.hex
-        let strData     = Data(bytes: value.hex.data!.binary).hex
-        
-        return headerData.appending(strData)
-    }
-    
-    public class func encode(value: NSArray, header: Data) -> String {
-        var encoded = [UInt8]()
-        encoded.append(contentsOf: header.binary)
-        
-        var rawBytes = [UInt8]()
-        makeRawByte(bytes: &rawBytes, measure: value.count)
-        rawBytes.append(contentsOf: value.count.binary)
-        
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        var data  = Data(bytes: encoded).decimal.hex
-        
-        for item in value {
-            let major = MajorTypes()
-            if var item = item as? NSNumber {
-                if item.intValue > 0 {
-                    major.set(type: .major0)
-                }
-                if item.intValue < 0 {
-                    major.set(type: .major1)
-                    item = NSNumber(value: (item.intValue * -1) - 1)
-                }
-                data.append(encode(value: item, header: major.get()))
-            }
-            if let item = item as? String {
-                major.set(type: .major3)
-                
-                data.append(encode(value: item, header: major.get()))
-            }
-            if let item = item as? NSArray {
-                major.set(type: .major4)
-                
-                data.append(encode(value: item, header: major.get()))
-            }
-            if let item = item as? NSDictionary {
-                major.set(type: .major5)
-                
-                data.append(encode(value: item, header: major.get()))
-            }
-        }
-        return data
-    }
-    
-    public class func encode(value: NSDictionary, header: Data) -> String {
-        var encoded = [UInt8]()
-        encoded.append(contentsOf: header.binary)
-        
-        var rawBytes = [UInt8]()
-        makeRawByte(bytes: &rawBytes, measure: value.allKeys.count)
-        rawBytes.append(contentsOf: value.allKeys.count.binary)
-        
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        var data  = Data(bytes: encoded).decimal.hex
-        
-        var key_value = [String:String]()
-        for (key, value) in value {
-            key_value[getKeyEncoding(key: key)] = getValueEncoding(value: value)
-        }
-        
-        let dic = key_value.valueKeySorted
-        for item in dic {
-            data.append(item.0)
-            data.append(item.1)
-        }
-        return data
     }
 }
 
@@ -110,64 +21,108 @@ private extension Encoder {
         else if measure >= 65536 && measure <= 4294967295 { bytes = 26.binary }
     }
     
-    class func getKeyEncoding(key: Any) -> String {
+    class func getIncludedEncodings(item: Any) -> String {
+        var data = ""
         let major = MajorTypes()
-        if var key = key as? NSNumber {
-            if key.intValue > 0 {
-                major.set(type: .major0)
-            }
-            if key.intValue < 0 {
+        
+        if var item = item as? NSNumber {
+            major.set(type: .major0)
+            if item.intValue < 0 {
+                item =  NSNumber(value: (item.intValue * -1) - 1)
                 major.set(type: .major1)
-                key = NSNumber(value: (key.intValue * -1) - 1)
             }
-            return encode(value: key, header: major.get())
+            data.append(item.encode(major: major.get()))
         }
-        if let key = key as? String {
+        if let item = item as? String {
             major.set(type: .major3)
-            
-            return encode(value: key, header: major.get())
+            data.append(item.encode(major: major.get()))
         }
-        if let key = key as? NSArray {
+        if let item = item as? NSArray {
             major.set(type: .major4)
-            
-            return encode(value: key, header: major.get())
+            data.append(item.encode(major: major.get()))
         }
-        if let key = key as? NSDictionary {
+        if let item = item as? NSDictionary {
             major.set(type: .major5)
-            
-            return encode(value: key, header: major.get())
+            data.append(item.encode(major: major.get()))
         }
-        return ""
+        return data
+    }
+}
+
+extension NSNumber {
+    public func encode(major: Data) -> String {
+        var encoded = major.binary
+
+        var rawBytes = [UInt8]()
+        Encoder.makeRawByte(bytes: &rawBytes, measure: self.intValue)
+        rawBytes.append(contentsOf: self.intValue.binary)
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        
+        return Data(bytes: encoded).decimal.hex
+    }
+}
+
+extension String {
+    public func encode(major: Data) -> String {
+        var encoded = major.binary
+        
+        var rawBytes = [UInt8]()
+        Encoder.makeRawByte(bytes: &rawBytes, measure: self.count)
+        rawBytes.append(contentsOf: self.count.binary)
+        
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        let headerData  = Data(bytes: encoded).decimal.hex
+        let strData     = Data(bytes: self.hex.data!.binary).hex
+        
+        return headerData.appending(strData)
+    }
+}
+
+extension NSArray {
+    public func encode(major: Data) -> String {
+        var encoded = major.binary
+        
+        var rawBytes = [UInt8]()
+        Encoder.makeRawByte(bytes: &rawBytes, measure: self.count)
+        rawBytes.append(contentsOf: self.count.binary)
+        
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        return (Data(bytes: encoded).decimal.hex).appending(getItemsEncoding())
     }
     
-    class func getValueEncoding(value: Any) -> String {
-        let major = MajorTypes()
-        if var value = value as? NSNumber {
-            if value.intValue > 0 {
-                major.set(type: .major0)
-            }
-            if value.intValue < 0 {
-                major.set(type: .major1)
-                value = NSNumber(value: (value.intValue * -1) - 1)
-            }
-            return encode(value: value, header: major.get())
+    private func getItemsEncoding() -> String {
+        var data = ""
+        for item in self {
+            data.append(Encoder.getIncludedEncodings(item: item))
         }
-        if let value = value as? String {
-            major.set(type: .major3)
-            
-            return encode(value: value, header: major.get())
-        }
-        if let value = value as? NSArray {
-            major.set(type: .major4)
-            
-            return encode(value: value, header: major.get())
-        }
-        if let value = value as? NSDictionary {
-            major.set(type: .major5)
-            
-            return encode(value: value, header: major.get())
-        }
-        return ""
+        return data
     }
+}
 
+extension NSDictionary {
+    public func encode(major: Data) -> String {
+        var encoded = major.binary
+        
+        var rawBytes = [UInt8]()
+        Encoder.makeRawByte(bytes: &rawBytes, measure: self.allKeys.count)
+        rawBytes.append(contentsOf: self.allKeys.count.binary)
+        
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        return (Data(bytes: encoded).decimal.hex).appending(getItemsEncoding())
+    }
+    
+    private func getItemsEncoding() -> String {
+        var data = ""
+        var key_value = [String:String]()
+        for (key, value) in self {
+            key_value[Encoder.getIncludedEncodings(item: key)] = Encoder.getIncludedEncodings(item: value)
+        }
+        
+        let dic = key_value.valueKeySorted
+        for item in dic {
+            data.append(item.0)
+            data.append(item.1)
+        }
+        return data
+    }
 }

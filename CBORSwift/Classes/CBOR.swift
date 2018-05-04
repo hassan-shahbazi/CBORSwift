@@ -6,13 +6,13 @@
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
-class CBOR: NSObject {
+class CBOR: Encoder {
     
     public class func encode(integer value: NSNumber) -> [UInt8]? {
         let major = MajorTypes()
         major.set(type: .major0)
         
-        return Encoder.encode(value: value, header: major.get()).data?.binary
+        return value.encode(major: major.get()).data?.binary
     }
     
     public class func encode(negative value: NSNumber) -> [UInt8]? {
@@ -20,7 +20,7 @@ class CBOR: NSObject {
         let major = MajorTypes()
         major.set(type: .major1)
 
-        return Encoder.encode(value: value, header: major.get()).data?.binary
+        return value.encode(major: major.get()).data?.binary
     }
     
     public class func encode(byteString value: String) {
@@ -32,24 +32,20 @@ class CBOR: NSObject {
         let major = MajorTypes()
         major.set(type: .major3)
         
-        return Encoder.encode(value: value, header: major.get()).data?.binary
+        return value.encode(major: major.get()).data?.binary
     }
     
     public class func encode(array value: NSArray) -> [UInt8]? {
         let major = MajorTypes()
         major.set(type: .major4)
         
-        return Encoder.encode(value: value, header: major.get()).data?.binary
+        return value.encode(major: major.get()).data?.binary
     }
     
     public class func encode(map value: NSDictionary) -> [UInt8]? {
         let major = MajorTypes()
         major.set(type: .major5)
         
-        return Encoder.encode(value: value, header: major.get()).data?.binary
+        return value.encode(major: major.get()).data?.binary
     }
-}
-
-extension CBOR {
-    
 }
