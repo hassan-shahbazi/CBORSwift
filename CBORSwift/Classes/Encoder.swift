@@ -8,8 +8,21 @@
 
 class Encoder: NSObject {
     
-    internal class func Encode(value: Any, major: MajorType) {
-        
+    public class func encode(value: Any, major: MajorTypes) -> String {
+        let major = major.get()
+        if let value = value as? NSNumber {
+            return value.encode(major: major)
+        }
+        if let value = value as? String {
+            return value.encode(major: major)
+        }
+        if let value = value as? NSArray {
+            return value.encode(major: major)
+        }
+        if let value = value as? NSDictionary {
+            return value.encode(major: major)
+        }
+        return ""
     }
 }
 
