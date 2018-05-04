@@ -47,9 +47,29 @@ class Encoder: NSObject {
         var data  = Data(bytes: encoded).decimal.hex
         
         for item in value {
+            let major = MajorTypes()
+            if var item = item as? NSNumber {
+                if item.intValue > 0 {
+                    major.set(type: .major0)
+                }
+                if item.intValue < 0 {
+                    major.set(type: .major1)
+                    item = NSNumber(value: (item.intValue * -1) - 1)
+                }
+                data.append(encode(value: item, header: major.get()))
+            }
             if let item = item as? String {
-                let major = MajorTypes()
                 major.set(type: .major3)
+                
+                data.append(encode(value: item, header: major.get()))
+            }
+            if let item = item as? NSArray {
+                major.set(type: .major4)
+                
+                data.append(encode(value: item, header: major.get()))
+            }
+            if let item = item as? NSDictionary {
+                major.set(type: .major5)
                 
                 data.append(encode(value: item, header: major.get()))
             }
@@ -66,7 +86,19 @@ class Encoder: NSObject {
         rawBytes.append(contentsOf: value.allKeys.count.binary)
         
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        return Data(bytes: encoded).decimal.hex
+        var data  = Data(bytes: encoded).decimal.hex
+        
+        var key_value = [String:String]()
+        for (key, value) in value {
+            key_value[getKeyEncoding(key: key)] = getValueEncoding(value: value)
+        }
+        
+        let dic = key_value.valueKeySorted
+        for item in dic {
+            data.append(item.0)
+            data.append(item.1)
+        }
+        return data
     }
 }
 
@@ -77,4 +109,65 @@ private extension Encoder {
         else if measure >= 256 && measure <= 65535 { bytes = 25.binary }
         else if measure >= 65536 && measure <= 4294967295 { bytes = 26.binary }
     }
+    
+    class func getKeyEncoding(key: Any) -> String {
+        let major = MajorTypes()
+        if var key = key as? NSNumber {
+            if key.intValue > 0 {
+                major.set(type: .major0)
+            }
+            if key.intValue < 0 {
+                major.set(type: .major1)
+                key = NSNumber(value: (key.intValue * -1) - 1)
+            }
+            return encode(value: key, header: major.get())
+        }
+        if let key = key as? String {
+            major.set(type: .major3)
+            
+            return encode(value: key, header: major.get())
+        }
+        if let key = key as? NSArray {
+            major.set(type: .major4)
+            
+            return encode(value: key, header: major.get())
+        }
+        if let key = key as? NSDictionary {
+            major.set(type: .major5)
+            
+            return encode(value: key, header: major.get())
+        }
+        return ""
+    }
+    
+    class func getValueEncoding(value: Any) -> String {
+        let major = MajorTypes()
+        if var value = value as? NSNumber {
+            if value.intValue > 0 {
+                major.set(type: .major0)
+            }
+            if value.intValue < 0 {
+                major.set(type: .major1)
+                value = NSNumber(value: (value.intValue * -1) - 1)
+            }
+            return encode(value: value, header: major.get())
+        }
+        if let value = value as? String {
+            major.set(type: .major3)
+            
+            return encode(value: value, header: major.get())
+        }
+        if let value = value as? NSArray {
+            major.set(type: .major4)
+            
+            return encode(value: value, header: major.get())
+        }
+        if let value = value as? NSDictionary {
+            major.set(type: .major5)
+            
+            return encode(value: value, header: major.get())
+        }
+        return ""
+    }
+
 }

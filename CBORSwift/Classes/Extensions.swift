@@ -39,7 +39,11 @@ extension Int {
     }
     
     public var hex: String {
-        return String(self, radix: 16).uppercased()
+        var hexStr = String(self, radix: 16).uppercased()
+        if hexStr.count == 1 {
+            hexStr = "0\(hexStr)"
+        }
+        return hexStr
     }
 }
 
@@ -92,5 +96,19 @@ extension String {
     
     public var hex: String {
         return self.utf8.map{ $0 }.reduce("") { $0 + String($1, radix: 16, uppercase: true) }
+    }
+}
+
+extension Dictionary where Value: Comparable, Key: Comparable {
+    var valueKeySorted: [(Key, Value)] {
+        return sorted {
+            if $0.0 != $1.0 {
+                return $0.0 < $1.0
+            }
+            else if $0.1 != $1.1 {
+                return $0.1 < $1.1
+            }
+            return $0.0 == $1.0
+        }
     }
 }
