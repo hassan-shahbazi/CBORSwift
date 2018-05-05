@@ -31,6 +31,10 @@ extension Data {
         }
         return str
     }
+    
+    public var string: String {
+        return String.init(data:self, encoding: .utf8)!
+    }
 }
 
 extension Int {

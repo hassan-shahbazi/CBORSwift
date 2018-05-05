@@ -35,7 +35,7 @@ class CBOR: NSObject {
 
 
     //MAKR:- Decoder
-    public class func decode(integer value: [UInt8]) -> NSObject? {
+    public class func decode(bytes value: [UInt8]) -> NSObject? {
         return Decoder.decode(value: value)
     }
 }
