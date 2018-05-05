@@ -49,6 +49,33 @@ extension NSObject: Any {
     @objc internal func encode(major: Data) -> String {
         return self.encode(major: major)
     }
+    
+    public var len: Int {
+        if let obj = self as? NSNumber {
+            if abs(obj.intValue) < 24 {
+                return 0
+            }
+            else if abs(obj.intValue) < 256 {
+                return 1
+            }
+            else if abs(obj.intValue) < 65536 {
+                return 2
+            }
+            else if abs(obj.intValue) < 4294967296 {
+                return 4
+            }
+        }
+        if let obj = self as? NSString {
+            return obj.length
+        }
+        if let obj = self as? NSArray {
+            return obj.count
+        }
+        if let obj = self as? NSDictionary {
+            return obj.allKeys.count
+        }
+        return 0
+    }
 }
 
 extension NSNumber {

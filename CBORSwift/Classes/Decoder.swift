@@ -7,24 +7,28 @@
 //
 
 class Decoder: NSObject {
-    public class func decode(value: [UInt8]) -> NSObject {
-        let header  = value[0]
+    public class func decode(header: UInt8? = nil, value: [UInt8]) -> NSObject {
+        let header  = header ?? value[0]
         let body    = [UInt8](value[1..<value.count])
         
         var decoded = NSObject()
         if let type = extractMajorType(Int(header)) {
             if type == .major0 {
-                decoded = Decoder.DecodeNumber(header: header, body: body)
+                decoded = DecodeNumber(header: header, body: body)
             }
             if type == .major1 {
-                let neg = Decoder.DecodeNumber(header: header, body: body).intValue
+                let neg = DecodeNumber(header: header, body: body).intValue
                 decoded = NSNumber(value: (neg + 1) * -1)
             }
-            if type == .major2 {
-                
-            }
+            if type == .major2 {}
             if type == .major3 {
-                decoded = Decoder.DecodeString(header: header, body: body)
+                decoded = DecodeString(header: header, body: body)
+            }
+            if type == .major4 {
+                decoded = DecodeArray(header: header, body: body)
+            }
+            if type == .major5 {
+                decoded = DecodeMap(header: header, body: body)
             }
         }
         return decoded
@@ -34,7 +38,6 @@ class Decoder: NSObject {
         let major = MajorTypes()
         return major.identify(header.decimal_binary)
     }
-    
 }
 
 extension Decoder {
@@ -56,27 +59,73 @@ extension Decoder {
     private class func DecodeString(header: UInt8, body: [UInt8]) -> NSString {
         let header = Int(header) % 96
         var len = 0
-        var value = [UInt8]()
+        var offset = 0
+        get(len: &len, offset: &offset, header: header, body: body)
         
+        let value = [UInt8](body[offset..<len+offset])
+        return Data(bytes: value).string as NSString
+    }
+
+    private class func DecodeArray(header: UInt8, body: [UInt8]) -> NSArray {
+        let header = Int(header) % 128
+        var len = 0
+        var offset = 0
+        get(len: &len, offset: &offset, header: header, body: body)
+
+
+        var value = [NSObject]()
+        for _ in 0..<len {
+            let header = body[offset]
+            let object = decode(header: header, value: [UInt8](body[offset..<body.count]))
+            value.append(object)
+            offset += object.len + 1
+        }
+        
+        return value as NSArray
+    }
+    
+    private class func DecodeMap(header: UInt8, body: [UInt8]) -> NSDictionary {
+        let header = Int(header) % 160
+        var len = 0
+        var offset = 0
+        get(len: &len, offset: &offset, header: header, body: body)
+        
+        
+        var dict = Dictionary<NSObject, NSObject>()
+        for _ in 0..<len {
+            var header = body[offset]
+            let key = decode(header: header, value: [UInt8](body[offset..<body.count]))
+            offset += key.len + 1
+            
+            header = body[offset]
+            let value = decode(header: header, value: [UInt8](body[offset..<body.count]))
+            offset += value.len + 1
+            
+            dict[key] = value
+        }
+        
+        return dict as NSDictionary
+    }
+    
+    class func get(len: inout Int, offset: inout Int, header: Int, body: [UInt8]) {
         if header < 24 {
             len = header
-            value = [UInt8](body[0..<len])
+            offset = 0
         }
         if header == 24 {
             len = Int(body[0])
-            value = [UInt8](body[1...len])
+            offset = 1
         }
         else if header == 25 {
             let hexLen = Int(body[0]).hex.appending(Int(body[1]).hex)
             len = hexLen.hex_decimal
-            value = [UInt8](body[2...len+1])
+            offset = 2
         }
         else if header == 26 {
             let hexLen = Int(body[0]).hex.appending(Int(body[1]).hex).appending(Int(body[2]).hex).appending(Int(body[3]).hex)
             len = hexLen.hex_decimal
-            value = [UInt8](body[3...len+2])
+            offset = 3
         }
-        return Data(bytes: value).string as NSString
     }
 }
 
