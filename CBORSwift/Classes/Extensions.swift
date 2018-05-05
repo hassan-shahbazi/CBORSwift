@@ -102,6 +102,30 @@ extension String {
         return self.utf8.map{ $0 }.reduce("") { $0 + String($1, radix: 16, uppercase: true) }
     }
     
+    public var hex_ascii: String {
+        var chars = [Character]()
+        for c in self {
+            chars.append(c)
+        }
+        
+        let numbers =  stride(from: 0, to: chars.count, by: 2).map{
+            strtoul(String(chars[$0 ..< $0+2]), nil, 16)
+        }
+        
+        var final = ""
+        var i = 0
+        
+        while i < numbers.count {
+            final.append(Character(UnicodeScalar(Int(numbers[i]))!))
+            i += 1
+        }
+        return final
+    }
+    
+    public var ascii_bytes: [UInt8] {
+        return self.data(using: .ascii)!.bytes
+    }
+    
     public var hex_decimal: Int {
         return Int(self, radix: 16)!
     }
@@ -114,6 +138,10 @@ extension String {
 extension NSString {
     public var hex: String {
         return String(self).utf8.map{ $0 }.reduce("") { $0 + String($1, radix: 16, uppercase: true) }
+    }
+
+    public var ascii_bytes: [UInt8] {
+        return String(self).ascii_bytes
     }
 }
 

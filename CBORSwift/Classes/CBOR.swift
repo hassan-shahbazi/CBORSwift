@@ -19,10 +19,15 @@ class CBOR: NSObject {
         return self.encode(value: value, major: .major1)
     }
     //MARK:- Byte strings
-    public class func encode(byteString value: String) {}
+    public class func encode(byteString value: String, isASCII: Bool = true) -> [UInt8]? {
+        let value   = (isASCII) ? value : value.hex_ascii
+        let NSValue: NSString = value as NSString
+        return self.encode(value: NSValue, major: .major2)
+    }
     //MARK:- Text strings
     public class func encode(textString value: String) -> [UInt8]? {
-        return self.encode(value: value as NSString, major: .major3)
+        let NSValue: NSString = value as NSString
+        return self.encode(value: NSValue, major: .major3)
     }
     //MARK:- Arrays
     public class func encode(array value: NSArray) -> [UInt8]? {

@@ -10,6 +10,7 @@ protocol CBOREncoder {
 }
 
 class Encoder: NSObject {
+
     class func makeRawByte(bytes: inout [UInt8], measure: Int) {
         if measure >= 0 && measure <= 23 {}
         else if measure >= 24 && measure <= 255 { bytes = 24.decimal_binary }
@@ -101,7 +102,9 @@ extension NSString {
         
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
         let headerData  = Data(bytes: encoded).binary_decimal.hex
-        let strData     = Data(bytes: self.hex.data!.bytes).hex
+        
+        let isByteString = self.data(using: String.Encoding.ascii.rawValue) != nil
+        let strData      = (isByteString) ? Data(bytes: self.hex.data!.bytes).hex : Data(bytes: self.ascii_bytes).hex
         
         return headerData.appending(strData)
     }
