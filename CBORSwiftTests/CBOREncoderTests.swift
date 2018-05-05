@@ -176,11 +176,6 @@ class CBOREncoderTests: XCTestCase {
         encoded = CBOR.encode(byteString: "30820193", isASCII: true)
         XCTAssertNotNil(encoded)
         XCTAssertEqual([0x48, 0x33, 0x30, 0x38, 0x32, 0x30, 0x31, 0x39, 0x33], encoded)
-        
-//        encoded = CBOR.encode(byteString: "3082019330820138A003020102")
-//        XCTAssertNotNil(encoded)
-//        XCTAssertEqual([0x4D, 0x30, 0x82, 0x01, 0x93, 0x30, 0x82, 0x01,
-//                        0x38, 0xA0, 0x03, 0x02, 0x01, 0x02], encoded)
     }
     
     //MARK:- Text string encoding

@@ -20,9 +20,11 @@ class Decoder: NSObject {
                 let neg = DecodeNumber(header: header, body: body).intValue
                 decoded = NSNumber(value: (neg + 1) * -1)
             }
-            if type == .major2 {}
+            if type == .major2 {
+                decoded = DecodeString(header: header, body: body, isByteString: true)
+            }
             if type == .major3 {
-                decoded = DecodeString(header: header, body: body)
+                decoded = DecodeString(header: header, body: body, isByteString: false)
             }
             if type == .major4 {
                 decoded = DecodeArray(header: header, body: body)
@@ -56,14 +58,15 @@ extension Decoder {
         return NSNumber(value: Data(bytes: value).hex.hex_decimal)
     }
 
-    private class func DecodeString(header: UInt8, body: [UInt8]) -> NSString {
-        let header = Int(header) % 96
+    private class func DecodeString(header: UInt8, body: [UInt8], isByteString: Bool) -> NSString {
+        let header = (isByteString) ? Int(header) % 64 : Int(header) % 96
         var len = 0
         var offset = 0
         get(len: &len, offset: &offset, header: header, body: body)
         
         let value = [UInt8](body[offset..<len+offset])
-        return Data(bytes: value).string as NSString
+        let data = Data(bytes: value)
+        return ((isByteString) ? data.hex : data.string) as NSString
     }
 
     private class func DecodeArray(header: UInt8, body: [UInt8]) -> NSArray {

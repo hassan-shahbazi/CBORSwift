@@ -181,7 +181,17 @@ class CBORDecoderTests: XCTestCase {
 
     //MARK:- Byte string dencoding
     func test_2_decodeByteString() {
-//        CBOR.dencode(bytes: <#T##[String]#>)
+        var decoded = CBOR.decode(bytes: [0x42, 0x25, 0x25])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual("2525", decoded as? String)
+        
+        decoded = CBOR.decode(bytes: [0x44, 0x25, 0x25, 0x30, 0x15])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual("25253015", decoded as? String)
+        
+        decoded = CBOR.decode(bytes: [0x48, 0x33, 0x30, 0x38, 0x32, 0x30, 0x31, 0x39, 0x33])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual("3330383230313933", decoded as? String)
     }
 
     //MARK:- Text string decoding
