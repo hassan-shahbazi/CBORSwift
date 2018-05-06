@@ -6,7 +6,7 @@
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
-class CBOR: NSObject {
+public class CBOR: NSObject {
     //MARK:- Encoder
     
     // MARK:- Positive integers
