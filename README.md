@@ -1,5 +1,6 @@
 # CBORSwift
 ![build status](https://travis-ci.org/Hassaniiii/CBORSwift.svg?branch=master)
+![cocoapods compatible](https://img.shields.io/badge/Cocoapods-compatible-4BC51D.svg?style=flat)
 ![Licence](https://img.shields.io/github/license/Hassaniiii/CBORSwift.svg)
 
 The Concise Binary Object Representation (CBOR) is a data format whose design goals include the possibility of extremely small code size, fairly small message size, and extensibility without the need for version negotiation.
