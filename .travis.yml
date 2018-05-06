@@ -1,0 +1,5 @@
+language: swift
+osx_image: xcode9.3
+script:
+    - xcodebuild -project CBORSwift.xcodeproj -scheme CBORSwift -configuration "Release" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+    - xcodebuild test -project CBORSwift.xcodeproj -scheme CBORSwift -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6,OS=11.3'
