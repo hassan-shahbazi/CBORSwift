@@ -41,7 +41,9 @@ public class CBOR: NSObject {
 
     //MAKR:- Decoder
     public class func decode(bytes value: [UInt8]) -> NSObject? {
-        return Decoder.decode(value: value)
+        let decoder = Decoder(value)
+        return decoder.decode()
+//        return Decoder.decode(value: value)
     }
 }
 
