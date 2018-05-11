@@ -19,10 +19,12 @@ class Encoder: NSObject {
     }
     
     private class func prepareHeaderByteArray(bytes: inout [UInt8], measure: Int) {
+        let upperBound: UInt64 = 4294967295
+        
         if measure >= 0 && measure <= 23 {}
         else if measure >= 24 && measure <= 255 { bytes = 24.decimal_binary }
         else if measure >= 256 && measure <= 65535 { bytes = 25.decimal_binary }
-        else if measure >= 65536 && measure <= 4294967295 { bytes = 26.decimal_binary }
+        else if measure >= 65536 && measure <= upperBound { bytes = 26.decimal_binary }
     }
     
     class func getIncludedEncodings(item: AnyObject) -> String {

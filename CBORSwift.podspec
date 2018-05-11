@@ -66,7 +66,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "10.0"
 
   #  When using multiple platforms
-  s.ios.deployment_target = "10.13"
+  # s.ios.deployment_target = "10.13"
   # s.osx.deployment_target = "10.7"
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"
@@ -80,7 +80,6 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/Hassaniiii/CBORSwift", :branch => "master", :tag => s.version.to_s }
 
-
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
   #  CocoaPods is smart about how it includes source code. For source files
@@ -89,7 +88,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "Classes", "CBORSwift/Classes/*.{swift}"
+  s.source_files  = "Classes", "CBORSwift/Classes/*.swift"
   s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
