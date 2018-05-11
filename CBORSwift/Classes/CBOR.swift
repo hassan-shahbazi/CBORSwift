@@ -9,11 +9,11 @@
 public class CBOR: NSObject {
     //MARK:- Encoder
     
-    // MARK:- Positive integers
+    //MARK:- Positive integers
     public class func encode(integer value: NSNumber) -> [UInt8]? {
         return self.encode(value: value, major: .major0)
     }
-    //MAKR:- Negative integers
+    //MARK:- Negative integers
     public class func encode(negative value: NSNumber) -> [UInt8]? {
         let value = NSNumber(value: (value.intValue * -1) - 1)
         return self.encode(value: value, major: .major1)
@@ -38,7 +38,7 @@ public class CBOR: NSObject {
     }
 
 
-    //MAKR:- Decoder
+    //MARK:- Decoder
     public class func decode(bytes value: [UInt8]) -> NSObject? {
         let decoder = Decoder(value)
         return decoder.decode()

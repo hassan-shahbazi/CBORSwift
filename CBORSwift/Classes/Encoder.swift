@@ -46,6 +46,17 @@ class Encoder: NSObject {
         else if measure >= 65536 && measure <= 4294967295 { bytes = 26.decimal_binary }
     }
     
+    class func prepareByteArray(major: Data, measure: Int) -> [UInt8] {
+        var encoded = major.bytes
+        
+        var rawBytes = [UInt8]()
+        Encoder.makeRawByte(bytes: &rawBytes, measure: measure)
+        rawBytes.append(contentsOf: measure.decimal_binary)
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        
+        return encoded
+    }
+    
     class func getIncludedEncodings(item: Any) -> String {
         var data = ""
         let major = MajorTypes()
@@ -82,58 +93,19 @@ extension NSObject: Any {
     @objc internal func encode(major: Data) -> String {
         return self.encode(major: major)
     }
-    
-    public var len: Int {
-        if let obj = self as? NSNumber {
-            if abs(obj.intValue) < 24 {
-                return 0
-            }
-            else if abs(obj.intValue) < 256 {
-                return 1
-            }
-            else if abs(obj.intValue) < 65536 {
-                return 2
-            }
-            else if abs(obj.intValue) < 4294967296 {
-                return 4
-            }
-        }
-        if let obj = self as? NSString {
-            return obj.length
-        }
-        if let obj = self as? NSArray {
-            return obj.count
-        }
-        if let obj = self as? NSDictionary {
-            return obj.allKeys.count
-        }
-        return 0
-    }
 }
 
 extension NSNumber {
     @objc override func encode(major: Data) -> String {
-        var encoded = major.bytes
-
-        var rawBytes = [UInt8]()
-        Encoder.makeRawByte(bytes: &rawBytes, measure: self.intValue)
-        rawBytes.append(contentsOf: self.intValue.decimal_binary)
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        
-        return Data(bytes: encoded).binary_decimal.hex
+        let encodedArray = Encoder.prepareByteArray(major: major, measure: self.intValue)
+        return Data(bytes: encodedArray).binary_decimal.hex
     }
 }
 
 extension NSString {
     @objc override func encode(major: Data) -> String {
-        var encoded = major.bytes
-        
-        var rawBytes = [UInt8]()
-        Encoder.makeRawByte(bytes: &rawBytes, measure: self.length)
-        rawBytes.append(contentsOf: self.length.decimal_binary)
-        
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        let headerData  = Data(bytes: encoded).binary_decimal.hex
+        let encodedArray = Encoder.prepareByteArray(major: major, measure: self.length)
+        let headerData  = Data(bytes: encodedArray).binary_decimal.hex
         let strData     = Data(bytes: self.ascii_bytes).hex
         
         return headerData.appending(strData)
@@ -142,14 +114,8 @@ extension NSString {
 
 extension NSArray {
     @objc override func encode(major: Data) -> String {
-        var encoded = major.bytes
-        
-        var rawBytes = [UInt8]()
-        Encoder.makeRawByte(bytes: &rawBytes, measure: self.count)
-        rawBytes.append(contentsOf: self.count.decimal_binary)
-        
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        return (Data(bytes: encoded).binary_decimal.hex).appending(getItemsEncoding())
+        let encodedArray = Encoder.prepareByteArray(major: major, measure: self.count)
+        return (Data(bytes: encodedArray).binary_decimal.hex).appending(getItemsEncoding())
     }
     
     private func getItemsEncoding() -> String {
@@ -163,14 +129,8 @@ extension NSArray {
 
 extension NSDictionary {
     @objc override func encode(major: Data) -> String {
-        var encoded = major.bytes
-        
-        var rawBytes = [UInt8]()
-        Encoder.makeRawByte(bytes: &rawBytes, measure: self.allKeys.count)
-        rawBytes.append(contentsOf: self.allKeys.count.decimal_binary)
-        
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        return (Data(bytes: encoded).binary_decimal.hex).appending(getItemsEncoding())
+        let encodedArray = Encoder.prepareByteArray(major: major, measure: self.allKeys.count)
+        return (Data(bytes: encodedArray).binary_decimal.hex).appending(getItemsEncoding())
     }
     
     private func getItemsEncoding() -> String {
@@ -192,13 +152,7 @@ extension NSDictionary {
 extension NSData {
     @objc override func encode(major: Data) -> String {
         let data = self as Data
-        var encoded = major.bytes
-        
-        var rawBytes = [UInt8]()
-        Encoder.makeRawByte(bytes: &rawBytes, measure: data.count)
-        rawBytes.append(contentsOf: data.count.decimal_binary)
-        
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        return Data(bytes: encoded).binary_decimal.hex
+        let encodedArray = Encoder.prepareByteArray(major: major, measure: data.count)
+        return Data(bytes: encodedArray).binary_decimal.hex
     }
 }

@@ -37,19 +37,6 @@ class CBORSwiftTests: XCTestCase {
         XCTAssertEqual(Data(bytes: [0x01, 0x00, 0x01]), major.get())
     }
     
-//    func test_2_setByteString() {
-//        let str1: NSString = "hello"
-//        str1.isByteString = false
-//        XCTAssertFalse(str1.isByteString)
-//
-//        let str2: NSString = "hello"
-//        str2.isByteString = true
-//        XCTAssertTrue(str2.isByteString)
-//
-//        let strDic: NSDictionary = ["1":str1]
-//        XCTAssertFalse((strDic.value(forKey: "1") as? NSString)!.isByteString)
-//    }
-    
     func test_9_FinalComprehensiveTest_Encode() {
         let id_1 = NSByteString("687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141".lowercased())
         
