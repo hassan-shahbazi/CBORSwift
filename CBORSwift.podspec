@@ -1,5 +1,5 @@
 #
-#  Be sure to run `pod spec lint Peanut.podspec' to ensure this is a
+#  Be sure to run `pod spec lint CBORSwift.podspec' to ensure this is a
 #  valid spec and to remove all comments including this before submitting the spec.
 #
 #  To learn more about Podspec attributes see http://docs.cocoapods.org/specification.html
@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "CBORSwift"
-  s.version      = "0.1.0"
-  s.summary      = "CBOR implementation for Swift project on iOS and macOS"
+  s.version      = "1.0.0"
+  s.summary      = "CBORSwift has implemented CBOR with Swift useful for iOS and macOS projects."
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
   The Concise Binary Object Representation (CBOR) is a data format whose design goals include the possibility of extremely small code size, fairly small message size, and extensibility without the need for version negotiation.
-  This library has implemented CBOR with Swift useful for iOS and macOS projects.
+  CBORSwift has implemented CBOR with Swift useful for iOS and macOS projects.
                    DESC
 
   s.homepage     = "http://www.vancosys.com"
@@ -40,7 +40,7 @@ Pod::Spec.new do |s|
   #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
   #
 
-  s.license      = { :type => "GNU", :file => "LICENSE.md" }
+  s.license      = { :type => "MIT", :file => "LICENSE.md" }
 
 
   # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -63,10 +63,10 @@ Pod::Spec.new do |s|
   #
 
   # s.platform     = :ios
-  # s.platform     = :ios, "5.0"
+  s.platform     = :ios, "10.0"
 
   #  When using multiple platforms
-  # s.ios.deployment_target = "5.0"
+  s.ios.deployment_target = "10.13"
   # s.osx.deployment_target = "10.7"
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"
@@ -76,8 +76,9 @@ Pod::Spec.new do |s|
   #
   #  Specify the location from where the source should be retrieved.
   #  Supports git, hg, bzr, svn and HTTP.
+  #
 
-  s.source       = { :git => "https://github.com/Hassaniiii/CBORSwift.git", :branch => "master", :tag => s.version.to_s }
+  s.source       = { :git => "https://github.com/Hassaniiii/CBORSwift", :branch => "master", :tag => s.version.to_s }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -90,6 +91,8 @@ Pod::Spec.new do |s|
 
   s.source_files  = "Classes", "CBORSwift/Classes/*.{swift}"
   s.exclude_files = "Classes/Exclude"
+
+  # s.public_header_files = "Classes/**/*.h"
 
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

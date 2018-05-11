@@ -158,7 +158,7 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertNotNil(encoded)
         XCTAssertEqual([0x3A, 0x00, 0x01, 0x00, 0x00], encoded)
         
-        encoded = CBOR.encode(NSNumber(value: -42949295))
+        encoded = CBOR.encode(NSNumber(value: -42949295).encode())
         XCTAssertNotNil(encoded)
         XCTAssertEqual([0x3A, 0x02, 0x8F, 0x5A, 0xAE], encoded)
     }

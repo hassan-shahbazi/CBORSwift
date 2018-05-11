@@ -7,6 +7,91 @@ The Concise Binary Object Representation (CBOR) is a data format whose design go
 
 *CBORSwift* has implemented CBOR with Swift useful for iOS and macOS projects.
 
+## Getting Started
+These instructions will help you to add `CBORSwift` to your current Xcode project in a few lines.
+
+**Please note that currently, only the majors 1 to 5 are supported. Other majors will be added gradually.** 
+
+### Installation
+#### Cocoapods
+The easiest way to import *CBORSwift* to your current project is to use `Cocoapods`. Just add the following to your `Podfile`
+
+`pod 'CBORSwift'`
+
+#### Manual
+You can also download the whole code manually and copy the following classes to your project based on your needs
+```
+CBOR.swift
+Decoder.swift
+Encoder.swift
+Extensions.swift
+MajorTypes.swift
+```
+## Usage
+Using `CBORSwift` is as simple as possible. You'll need to call 2 functions for *encoding* and *decoding*. The most important point is that **You have to use `NSObject` for encoding and decoding parameters.**
+
+#### Numbers (Positive, Negative)
+Just creat `NSNumber` instance and pass it to `encode`- `decode` function. Or, you can call `encode`-`decode` directly from the instance:
+
+```swift
+var encoded = CBOR.encode(NSNumber(value: 30))
+var encoded = NSNumber(value: 3428).encode()
+
+var encoded = CBOR.encode(NSNumber(value: -15))
+var encoded = NSNumber(value: -42949295).encode()
+
+var decoded = CBOR.decode([0x0A])
+var decoded = [0x0A].decode()
+
+var decoded = CBOR.decode([[0x39, 0x01, 0x00]])
+var decoded = [[0x39, 0x01, 0x00]].decode()
+```
+
+#### Byte Strings
+You'll need to creat an instance of `NSByteString` class, and start playing with it:
+
+```swift
+var str = NSByteString("2525")
+
+var encoded = CBOR.encode(str)
+var encoded = str.encode()
+
+var decoded = CBOR.decode([0x42, 0x25, 0x25])
+var decoded = [0x42, 0x25, 0x25].decode()
+```
+
+#### Text Strings
+New an instance of `NSString`, and that's it:
+
+```swift
+var encoded = CBOR.encode("hello" as NSString)
+var encoded = ("hello" as NSString).encode()
+
+var decoded = CBOR.decode([0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F])
+var decoded = [0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F].decode()
+```
+
+#### Array
+New an instance of `NSArray`:
+
+```swift
+var encoded = CBOR.encode([10] as NSArray)
+var encoded = ([10, 15, -9] as NSArray).encode()
+
+var decoded = CBOR.decode([0x81, 0x0A])
+var decoded = [0x81, 0x0A].decode()
+```
+
+#### Map
+Map actually is same as `NSDictionary`  in Apple programming systems:
+
+```swift
+var encoded = CBOR.encode(["sure":"shahbazi", "name":"hassan"] as NSDictionary)
+var encoded = (["sure":"shahbazi", "name":"hassan"] as NSDictionary).encode()
+
+var decoded = CBOR.decode([0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64])
+var decoded = [0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64].decode()
+```
 
 ## Contribution
 Please ensure your pull request adheres to the following guidelines:
