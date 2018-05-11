@@ -9,6 +9,34 @@ protocol CBOREncoder {
     static func encode(value: NSObject, major: MajorType) -> [UInt8]?
 }
 
+class NSByteString: NSObject {
+    private var value: String = ""
+    
+    init(_ value: String) {
+        super.init()
+        self.value = value
+    }
+    
+    @objc override func encode(major: Data) -> String {
+        var encoded = major.bytes
+        
+        var rawBytes = [UInt8]()
+        var byteArray = [UInt8]()
+        for offset in stride(from: 0, to: self.value.count, by: 2) {
+            let byte = value[offset..<offset+2].hex_decimal
+            byteArray.append(UInt8(byte))
+        }
+        Encoder.makeRawByte(bytes: &rawBytes, measure: byteArray.count)
+        rawBytes.append(contentsOf: byteArray.count.decimal_binary)
+        
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        let headerData  = Data(bytes: encoded).binary_decimal.hex
+        let byteData    = Data(bytes: byteArray).hex
+        
+        return headerData.appending(byteData)
+    }
+}
+
 class Encoder: NSObject {
 
     class func makeRawByte(bytes: inout [UInt8], measure: Int) {
@@ -28,6 +56,10 @@ class Encoder: NSObject {
                 item =  NSNumber(value: (item.intValue * -1) - 1)
                 major.set(type: .major1)
             }
+            data.append(item.encode(major: major.get()))
+        }
+        if let item = item as? NSByteString {
+            major.set(type: .major2)
             data.append(item.encode(major: major.get()))
         }
         if let item = item as? String {
@@ -102,9 +134,7 @@ extension NSString {
         
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
         let headerData  = Data(bytes: encoded).binary_decimal.hex
-        
-        let isByteString = self.data(using: String.Encoding.ascii.rawValue) != nil
-        let strData      = (isByteString) ? Data(bytes: self.hex.data!.bytes).hex : Data(bytes: self.ascii_bytes).hex
+        let strData     = Data(bytes: self.ascii_bytes).hex
         
         return headerData.appending(strData)
     }

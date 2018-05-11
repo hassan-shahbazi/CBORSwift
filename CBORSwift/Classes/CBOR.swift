@@ -20,16 +20,8 @@ public class CBOR: NSObject {
     }
     //MARK:- Byte strings
     public class func encode(byteString value: String) -> [UInt8]? {
-        var byteArray = [UInt8]()
-        for offset in stride(from: 0, to: value.count, by: 2) {
-            let byte = value[offset..<offset+2].hex_decimal
-            byteArray.append(UInt8(byte))
-        }
-        let data: NSData = Data(bytes: byteArray) as NSData
-        var result = self.encode(value: data, major: .major2)
-        result?.append(contentsOf: byteArray)
-        return result
-        
+        let byteString = NSByteString(value)
+        return self.encode(value: byteString, major: .major2)
     }
     //MARK:- Text strings
     public class func encode(textString value: String) -> [UInt8]? {
@@ -50,7 +42,6 @@ public class CBOR: NSObject {
     public class func decode(bytes value: [UInt8]) -> NSObject? {
         let decoder = Decoder(value)
         return decoder.decode()
-//        return Decoder.decode(value: value)
     }
 }
 
