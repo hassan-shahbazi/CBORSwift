@@ -41,7 +41,7 @@ class Decoder: NSObject {
                 decoded = DecodeArray(header: header)
             }
             if type == .major5 {
-//                decoded = DecodeMap(header: header)
+                decoded = DecodeMap(header: header)
             }
         }
         return decoded
@@ -59,12 +59,15 @@ extension Decoder {
         
         if Int(header) % 32 == 24 {
             value = [UInt8](body[0...0])
+            self.body = [UInt8](body[1..<body.count])
         }
         else if Int(header) % 32 == 25 {
             value = [UInt8](body[0...1])
+            self.body = [UInt8](body[2..<body.count])
         }
         else if Int(header) % 32 == 26 {
             value = [UInt8](body[0...3])
+            self.body = [UInt8](body[4..<body.count])
         }
         return NSNumber(value: Data(bytes: value).hex.hex_decimal)
     }
@@ -97,22 +100,22 @@ extension Decoder {
         return value as NSArray
     }
 
-//    private func DecodeMap(header: UInt8) -> NSDictionary {
-//        let header = Int(header) % 160
-//        var len = 0
-//        var offset = 0
-//        get(len: &len, offset: &offset, header: header)
-//
-//
-//        var dict = Dictionary<NSObject, NSObject>()
-//        for _ in 0..<len {
-//            let key = decode()
-//            let value = decode()
-//            dict[key] = value
-//        }
-//
-//        return dict as NSDictionary
-//    }
+    private func DecodeMap(header: UInt8) -> NSDictionary {
+        let header = Int(header) % 160
+        var len = 0
+        var offset = 0
+        get(len: &len, offset: &offset, header: header)
+
+
+        var dict = Dictionary<NSObject, NSObject>()
+        for _ in 0..<len {
+            let key = decode()
+            let value = decode()
+            dict[key] = value
+        }
+
+        return dict as NSDictionary
+    }
 
     private func get(len: inout Int, offset: inout Int, header: Int) {
         if header < 24 {
