@@ -17,7 +17,16 @@ enum MajorType: String {
 }
 
 class MajorTypes: NSObject {
-    var type: MajorType?
+    private var type: MajorType?
+    
+    override init() {
+        super.init()
+    }
+    
+    init(_ type: MajorType) {
+        super.init()
+        self.type = type
+    }
     
     public func set(type: MajorType) {
         self.type = type

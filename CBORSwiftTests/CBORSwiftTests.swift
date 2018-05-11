@@ -51,7 +51,7 @@ class CBORSwiftTests: XCTestCase {
         let dic4: NSArray = NSArray(array: [dic4_1, dic4_2, dic4_3])
         
         let decoded: NSDictionary = [1: id_1, 2:dic2, 3:dic3, 4:dic4]
-        let encoded:[UInt8]? = CBOR.encode(map: decoded)
+        let encoded:[UInt8]? = CBOR.encode(decoded as NSDictionary)
         XCTAssertNotNil(encoded)
         
         let expected: [UInt8] = [0xA4, 0x01, 0x58, 0x20, 0x68, 0x71, 0x34, 0x96, 0x82, 0x22,

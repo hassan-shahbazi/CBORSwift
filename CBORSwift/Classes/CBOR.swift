@@ -7,49 +7,15 @@
 //
 
 public class CBOR: NSObject {
-    //MARK:- Encoder
     
-    //MARK:- Positive integers
-    public class func encode(integer value: NSNumber) -> [UInt8]? {
-        return self.encode(value: value, major: .major0)
+    //MARK:- Encoder
+    public class func encode(_ value: NSObject) -> [UInt8]? {
+        return value.encode().data?.bytes
     }
-    //MARK:- Negative integers
-    public class func encode(negative value: NSNumber) -> [UInt8]? {
-        let value = NSNumber(value: (value.intValue * -1) - 1)
-        return self.encode(value: value, major: .major1)
-    }
-    //MARK:- Byte strings
-    public class func encode(byteString value: String) -> [UInt8]? {
-        let byteString = NSByteString(value)
-        return self.encode(value: byteString, major: .major2)
-    }
-    //MARK:- Text strings
-    public class func encode(textString value: String) -> [UInt8]? {
-        let NSValue: NSString = value as NSString
-        return self.encode(value: NSValue, major: .major3)
-    }
-    //MARK:- Arrays
-    public class func encode(array value: NSArray) -> [UInt8]? {
-        return self.encode(value: value, major: .major4)
-    }
-    //MARK:- Maps
-    public class func encode(map value: NSDictionary) -> [UInt8]? {
-        return self.encode(value: value, major: .major5)
-    }
-
 
     //MARK:- Decoder
     public class func decode(bytes value: [UInt8]) -> NSObject? {
         let decoder = Decoder(value)
         return decoder.decode()
-    }
-}
-
-extension CBOR: CBOREncoder {
-    static func encode(value: NSObject, major: MajorType) -> [UInt8]? {
-        let type = MajorTypes()
-        type.set(type: major)
-        
-        return value.encode(major: type.get()).data?.bytes
     }
 }

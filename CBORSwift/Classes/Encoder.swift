@@ -5,9 +5,6 @@
 //  Created by Hassaniiii on 5/2/18.
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
-protocol CBOREncoder {
-    static func encode(value: NSObject, major: MajorType) -> [UInt8]?
-}
 
 class NSByteString: NSObject {
     private var value: String = ""
@@ -17,8 +14,8 @@ class NSByteString: NSObject {
         self.value = value
     }
     
-    @objc override func encode(major: Data) -> String {
-        var encoded = major.bytes
+    @objc override func encode() -> String {
+        var encoded = MajorTypes(.major2).get().bytes
         
         var rawBytes = [UInt8]()
         var byteArray = [UInt8]()
@@ -37,8 +34,7 @@ class NSByteString: NSObject {
     }
 }
 
-class Encoder: NSObject {
-
+class Encoder: NSObject {    
     class func makeRawByte(bytes: inout [UInt8], measure: Int) {
         if measure >= 0 && measure <= 23 {}
         else if measure >= 24 && measure <= 255 { bytes = 24.decimal_binary }
@@ -46,8 +42,8 @@ class Encoder: NSObject {
         else if measure >= 65536 && measure <= 4294967295 { bytes = 26.decimal_binary }
     }
     
-    class func prepareByteArray(major: Data, measure: Int) -> [UInt8] {
-        var encoded = major.bytes
+    class func prepareByteArray(major: MajorType, measure: Int) -> [UInt8] {
+        var encoded = MajorTypes(major).get().bytes
         
         var rawBytes = [UInt8]()
         Encoder.makeRawByte(bytes: &rawBytes, measure: measure)
@@ -57,54 +53,35 @@ class Encoder: NSObject {
         return encoded
     }
     
-    class func getIncludedEncodings(item: Any) -> String {
+    class func getIncludedEncodings(item: AnyObject) -> String {
         var data = ""
-        let major = MajorTypes()
-        
-        if var item = item as? NSNumber {
-            major.set(type: .major0)
-            if item.intValue < 0 {
-                item =  NSNumber(value: (item.intValue * -1) - 1)
-                major.set(type: .major1)
-            }
-            data.append(item.encode(major: major.get()))
-        }
-        if let item = item as? NSByteString {
-            major.set(type: .major2)
-            data.append(item.encode(major: major.get()))
-        }
-        if let item = item as? String {
-            major.set(type: .major3)
-            data.append(item.encode(major: major.get()))
-        }
-        if let item = item as? NSArray {
-            major.set(type: .major4)
-            data.append(item.encode(major: major.get()))
-        }
-        if let item = item as? NSDictionary {
-            major.set(type: .major5)
-            data.append(item.encode(major: major.get()))
-        }
+        data.append(item.encode())
         return data
     }
 }
 
 extension NSObject: Any {
-    @objc internal func encode(major: Data) -> String {
-        return self.encode(major: major)
+    @objc internal func encode() -> String {
+        return self.encode()
     }
 }
 
 extension NSNumber {
-    @objc override func encode(major: Data) -> String {
-        let encodedArray = Encoder.prepareByteArray(major: major, measure: self.intValue)
+    @objc override func encode() -> String {
+        var major: MajorType = .major0
+        var measure = self.intValue
+        if (self.intValue < 0) {
+            major = .major1
+            measure = (self.intValue * -1) - 1
+        }
+        let encodedArray = Encoder.prepareByteArray(major: major, measure: measure)
         return Data(bytes: encodedArray).binary_decimal.hex
     }
 }
 
 extension NSString {
-    @objc override func encode(major: Data) -> String {
-        let encodedArray = Encoder.prepareByteArray(major: major, measure: self.length)
+    @objc override func encode() -> String {
+        let encodedArray = Encoder.prepareByteArray(major: .major3, measure: self.length)
         let headerData  = Data(bytes: encodedArray).binary_decimal.hex
         let strData     = Data(bytes: self.ascii_bytes).hex
         
@@ -113,23 +90,23 @@ extension NSString {
 }
 
 extension NSArray {
-    @objc override func encode(major: Data) -> String {
-        let encodedArray = Encoder.prepareByteArray(major: major, measure: self.count)
+    @objc override func encode() -> String {
+        let encodedArray = Encoder.prepareByteArray(major: .major4, measure: self.count)
         return (Data(bytes: encodedArray).binary_decimal.hex).appending(getItemsEncoding())
     }
     
     private func getItemsEncoding() -> String {
         var data = ""
         for item in self {
-            data.append(Encoder.getIncludedEncodings(item: item))
+            data.append(Encoder.getIncludedEncodings(item: item as AnyObject))
         }
         return data
     }
 }
 
 extension NSDictionary {
-    @objc override func encode(major: Data) -> String {
-        let encodedArray = Encoder.prepareByteArray(major: major, measure: self.allKeys.count)
+    @objc override func encode() -> String {
+        let encodedArray = Encoder.prepareByteArray(major: .major5, measure: self.allKeys.count)
         return (Data(bytes: encodedArray).binary_decimal.hex).appending(getItemsEncoding())
     }
     
@@ -137,7 +114,7 @@ extension NSDictionary {
         var data = ""
         var key_value = [String:String]()
         for (key, value) in self {
-            key_value[Encoder.getIncludedEncodings(item: key)] = Encoder.getIncludedEncodings(item: value)
+            key_value[Encoder.getIncludedEncodings(item: key as AnyObject)] = Encoder.getIncludedEncodings(item: value as AnyObject)
         }
         
         let dic = key_value.valueKeySorted
@@ -150,9 +127,9 @@ extension NSDictionary {
 }
 
 extension NSData {
-    @objc override func encode(major: Data) -> String {
+    @objc override func encode() -> String {
         let data = self as Data
-        let encodedArray = Encoder.prepareByteArray(major: major, measure: data.count)
+        let encodedArray = Encoder.prepareByteArray(major: .major2, measure: data.count)
         return Data(bytes: encodedArray).binary_decimal.hex
     }
 }
