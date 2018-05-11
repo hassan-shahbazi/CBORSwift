@@ -158,3 +158,17 @@ extension NSDictionary {
         return data
     }
 }
+
+extension NSData {
+    @objc override func encode(major: Data) -> String {
+        let data = self as Data
+        var encoded = major.bytes
+        
+        var rawBytes = [UInt8]()
+        Encoder.makeRawByte(bytes: &rawBytes, measure: data.count)
+        rawBytes.append(contentsOf: data.count.decimal_binary)
+        
+        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
+        return Data(bytes: encoded).binary_decimal.hex
+    }
+}

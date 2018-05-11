@@ -37,10 +37,10 @@ class CBORSwiftTests: XCTestCase {
         XCTAssertEqual(Data(bytes: [0x01, 0x00, 0x01]), major.get())
     }
     
-    func test_2_setByteString() {
-        let str1: NSString = "hello".byteString(false)
-        XCTAssertFalse(str1.checkByteString())
-    }
+//    func test_2_setByteString() {
+//        let str1: NSString = "hello".byteString(false)
+//        XCTAssertFalse(str1.checkByteString())
+//    }
     
     func test_9_FinalComprehensiveTest_Encode() {
         let dic2: NSDictionary = ["id":"test.ctap", "name":"test.ctap"]

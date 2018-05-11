@@ -165,17 +165,20 @@ class CBOREncoderTests: XCTestCase {
     
     //MARK:- Byte string encoding
     func test_2_encodeByteString() {
-        var encoded = CBOR.encode(byteString: "2525", isASCII: false)
+        var encoded = CBOR.encode(byteString: "2525")
         XCTAssertNotNil(encoded)
         XCTAssertEqual([0x42, 0x25, 0x25], encoded)
         
-        encoded = CBOR.encode(byteString: "25253015", isASCII: false)
+        encoded = CBOR.encode(byteString: "25253015")
         XCTAssertNotNil(encoded)
         XCTAssertEqual([0x44, 0x25, 0x25, 0x30, 0x15], encoded)
         
-        encoded = CBOR.encode(byteString: "30820193", isASCII: true)
+        encoded = CBOR.encode(byteString: "687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141")
         XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x48, 0x33, 0x30, 0x38, 0x32, 0x30, 0x31, 0x39, 0x33], encoded)
+        XCTAssertEqual([0x58, 0x20, 0x68, 0x71, 0x34, 0x96, 0x82, 0x22,
+                        0xEC, 0x17, 0x20, 0x2E, 0x42, 0x50, 0x5F, 0x8E, 0xD2, 0xB1,
+                        0x6A, 0xE2, 0x2F, 0x16, 0xBB, 0x05, 0xB8, 0x8C, 0x25, 0xDB,
+                        0x9E, 0x60, 0x26, 0x45, 0xF1, 0x41], encoded)
     }
     
     //MARK:- Text string encoding
