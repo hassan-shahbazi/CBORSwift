@@ -6,51 +6,23 @@
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
-class NSByteString: NSObject {
-    private var value: String = ""
-    
-    init(_ value: String) {
-        super.init()
-        self.value = value
-    }
-    
-    @objc override func encode() -> String {
-        var encoded = MajorTypes(.major2).get().bytes
-        
-        var rawBytes = [UInt8]()
-        var byteArray = [UInt8]()
-        for offset in stride(from: 0, to: self.value.count, by: 2) {
-            let byte = value[offset..<offset+2].hex_decimal
-            byteArray.append(UInt8(byte))
-        }
-        Encoder.makeRawByte(bytes: &rawBytes, measure: byteArray.count)
-        rawBytes.append(contentsOf: byteArray.count.decimal_binary)
-        
-        encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
-        let headerData  = Data(bytes: encoded).binary_decimal.hex
-        let byteData    = Data(bytes: byteArray).hex
-        
-        return headerData.appending(byteData)
-    }
-}
-
-class Encoder: NSObject {    
-    class func makeRawByte(bytes: inout [UInt8], measure: Int) {
-        if measure >= 0 && measure <= 23 {}
-        else if measure >= 24 && measure <= 255 { bytes = 24.decimal_binary }
-        else if measure >= 256 && measure <= 65535 { bytes = 25.decimal_binary }
-        else if measure >= 65536 && measure <= 4294967295 { bytes = 26.decimal_binary }
-    }
-    
+class Encoder: NSObject {
     class func prepareByteArray(major: MajorType, measure: Int) -> [UInt8] {
         var encoded = MajorTypes(major).get().bytes
         
         var rawBytes = [UInt8]()
-        Encoder.makeRawByte(bytes: &rawBytes, measure: measure)
+        prepareHeaderByteArray(bytes: &rawBytes, measure: measure)
         rawBytes.append(contentsOf: measure.decimal_binary)
         encoded.append(contentsOf: [UInt8](rawBytes[3..<rawBytes.count]))
         
         return encoded
+    }
+    
+    private class func prepareHeaderByteArray(bytes: inout [UInt8], measure: Int) {
+        if measure >= 0 && measure <= 23 {}
+        else if measure >= 24 && measure <= 255 { bytes = 24.decimal_binary }
+        else if measure >= 256 && measure <= 65535 { bytes = 25.decimal_binary }
+        else if measure >= 65536 && measure <= 4294967295 { bytes = 26.decimal_binary }
     }
     
     class func getIncludedEncodings(item: AnyObject) -> String {
@@ -76,6 +48,28 @@ extension NSNumber {
         }
         let encodedArray = Encoder.prepareByteArray(major: major, measure: measure)
         return Data(bytes: encodedArray).binary_decimal.hex
+    }
+}
+
+class NSByteString: NSObject {
+    private var value: String = ""
+    
+    init(_ value: String) {
+        super.init()
+        self.value = value
+    }
+    
+    @objc override func encode() -> String {
+        var byteArray = [UInt8]()
+        for offset in stride(from: 0, to: self.value.count, by: 2) {
+            let byte = value[offset..<offset+2].hex_decimal
+            byteArray.append(UInt8(byte))
+        }
+        let encodedArray = Encoder.prepareByteArray(major: .major2, measure: byteArray.count)
+        let headerData   = Data(bytes: encodedArray).binary_decimal.hex
+        let byteData     = Data(bytes: byteArray).hex
+        
+        return headerData.appending(byteData)
     }
 }
 
