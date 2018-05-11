@@ -2,7 +2,7 @@
 //  MajorTypes.swift
 //  CBORSwift
 //
-//  Created by Hassaniiii on 5/2/18.
+//  Created by Hassan Shahbazi on 5/2/18.
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 enum MajorType: String {

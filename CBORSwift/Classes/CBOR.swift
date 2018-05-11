@@ -2,7 +2,7 @@
 //  CBOR.swift
 //  CBORSwift
 //
-//  Created by Hassaniiii on 5/2/18.
+//  Created by Hassan Shahbazi on 5/2/18.
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
@@ -14,7 +14,7 @@ public class CBOR: NSObject {
     }
 
     //MARK:- Decoder
-    public class func decode(bytes value: [UInt8]) -> NSObject? {
+    public class func decode(_ value: [UInt8]) -> NSObject? {
         let decoder = Decoder(value)
         return decoder.decode()
     }

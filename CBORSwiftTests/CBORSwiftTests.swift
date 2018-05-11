@@ -2,7 +2,7 @@
 //  CBORSwiftTests.swift
 //  CBORSwiftTests
 //
-//  Created by Hassaniiii on 5/2/18.
+//  Created by Hassan Shahbazi on 5/2/18.
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
@@ -136,7 +136,7 @@ class CBORSwiftTests: XCTestCase {
                                         0x6A,
                                             0x70, 0x75, 0x62, 0x6C, 0x69, 0x63, 0x2D, 0x6B, 0x65, 0x79]
         
-        let decoded = CBOR.decode(bytes: encoded)
+        let decoded = CBOR.decode(encoded)
         XCTAssertNotNil(decoded)
         
         let dic2: NSDictionary = ["id":"test.ctap", "name":"test.ctap"]

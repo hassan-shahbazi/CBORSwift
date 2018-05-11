@@ -2,7 +2,7 @@
 //  Data.swift
 //  CBORSwift
 //
-//  Created by Hassaniiii on 5/3/18.
+//  Created by Hassan Shahbazi on 5/3/18.
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
@@ -10,10 +10,7 @@ import Foundation
 
 extension Data {
     public var bytes: [UInt8] {
-        var bytes = [UInt8](repeating:0, count:self.count)
-        self.copyBytes(to: &bytes, count: self.count)
-        
-        return [UInt8](bytes[0..<bytes.count])
+        return [UInt8](self)
     }
     
     public var binary_decimal: Int {

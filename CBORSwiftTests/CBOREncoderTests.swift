@@ -2,7 +2,7 @@
 //  CBOREncoderTests.swift
 //  CBORSwiftTests
 //
-//  Created by Hassaniiii on 5/4/18.
+//  Created by Hassan Shahbazi on 5/4/18.
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
