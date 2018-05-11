@@ -51,8 +51,12 @@ class CBORSwiftTests: XCTestCase {
         let dic4: NSArray = NSArray(array: [dic4_1, dic4_2, dic4_3])
         
         let decoded: NSDictionary = [1: id_1, 2:dic2, 3:dic3, 4:dic4]
-        let encoded:[UInt8]? = CBOR.encode(decoded as NSDictionary)
-        XCTAssertNotNil(encoded)
+        let encoded_functional:[UInt8]? = CBOR.encode(decoded as NSDictionary)
+        let encoded_extentional: [UInt8]? = decoded.encode()
+        
+        XCTAssertNotNil(encoded_functional)
+        XCTAssertNotNil(encoded_extentional)
+        XCTAssertEqual(encoded_functional, encoded_extentional)
         
         let expected: [UInt8] = [0xA4, 0x01, 0x58, 0x20, 0x68, 0x71, 0x34, 0x96, 0x82, 0x22,
                                 0xEC, 0x17, 0x20, 0x2E, 0x42, 0x50, 0x5F, 0x8E, 0xD2, 0xB1,
@@ -77,7 +81,7 @@ class CBORSwiftTests: XCTestCase {
                                 0x61, 0x6C, 0x67, 0x38, 0x24, 0x64, 0x74, 0x79, 0x70, 0x65,
                                 0x6A, 0x70, 0x75, 0x62, 0x6C, 0x69, 0x63, 0x2D, 0x6B, 0x65, 0x79
         ]
-        XCTAssertEqual(encoded, expected)
+        XCTAssertEqual(encoded_functional, expected)
     }
     
     func test_9_FinalComprehensiveTest_Decode() {
@@ -136,8 +140,12 @@ class CBORSwiftTests: XCTestCase {
                                         0x6A,
                                             0x70, 0x75, 0x62, 0x6C, 0x69, 0x63, 0x2D, 0x6B, 0x65, 0x79]
         
-        let decoded = CBOR.decode(encoded)
-        XCTAssertNotNil(decoded)
+        let decoded_functional = CBOR.decode(encoded)
+        let decoded_extentional = encoded.decode()
+        
+        XCTAssertNotNil(decoded_functional)
+        XCTAssertNotNil(decoded_extentional)
+        XCTAssertEqual(decoded_functional, decoded_extentional)
         
         let dic2: NSDictionary = ["id":"test.ctap", "name":"test.ctap"]
         let dic3: NSDictionary = ["id":"01B65EBF914724C5FC50BE4E9FF2E61787FE97F8F0B1544344316ECD24925F01".lowercased(),
@@ -151,7 +159,7 @@ class CBORSwiftTests: XCTestCase {
                                       2:dic2,
                                       3:dic3,
                                       4:dic4]
-        XCTAssertEqual(expected, decoded as! NSDictionary)
+        XCTAssertEqual(expected, decoded_functional as! NSDictionary)
     }
 
 }

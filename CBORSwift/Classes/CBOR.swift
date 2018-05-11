@@ -19,3 +19,16 @@ public class CBOR: NSObject {
         return decoder.decode()
     }
 }
+
+
+extension NSObject {
+    public func encode() -> [UInt8]? {
+        return CBOR.encode(self)
+    }
+}
+
+extension Array where Element == UInt8 {
+    public func decode() -> NSObject? {
+        return CBOR.decode(self)
+    }
+}
