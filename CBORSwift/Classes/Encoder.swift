@@ -53,7 +53,7 @@ extension NSNumber {
     }
 }
 
-class NSByteString: NSObject {
+public class NSByteString: NSObject {
     private var value: String = ""
     
     init(_ value: String) {
