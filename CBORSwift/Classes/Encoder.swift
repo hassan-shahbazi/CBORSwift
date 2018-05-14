@@ -56,7 +56,7 @@ extension NSNumber {
 public class NSByteString: NSObject {
     private var value: String = ""
     
-    init(_ value: String) {
+    public init(_ value: String) {
         super.init()
         self.value = value
     }
