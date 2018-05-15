@@ -43,6 +43,9 @@ class Decoder: NSObject {
             if type == .major5 {
                 decoded = DecodeMap(header: header)
             }
+            if type == .major7 {
+                decoded = DecodeSimpleValue(header: header) ?? NSObject()
+            }
         }
         return decoded
     }
@@ -106,7 +109,6 @@ extension Decoder {
         var offset = 0
         get(len: &len, offset: &offset, header: header)
 
-
         var dict = Dictionary<NSObject, NSObject>()
         for _ in 0..<len {
             let key = decode()
@@ -117,6 +119,11 @@ extension Decoder {
         return dict as NSDictionary
     }
 
+    private func DecodeSimpleValue(header: UInt8) -> NSNumber? {
+        let header = Int(header) % 244
+        return NSSimpleValue.decode(header: header)
+    }
+    
     private func get(len: inout Int, offset: inout Int, header: Int) {
         if header < 24 {
             len = header

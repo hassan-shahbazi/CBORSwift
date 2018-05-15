@@ -334,4 +334,15 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertNotNil(decoded)
         XCTAssertEqual(["item0": 127, "item1": "string", 5: "number", 18: 98], decoded as? NSDictionary)
     }
+
+    //MARK: Simple Value encoding
+    func test_2_decodeSimpleBool() {
+        var decoded = CBOR.decode([0xF4])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(false, decoded as? NSNumber)
+        
+        decoded = CBOR.decode([0xF5])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(true, decoded as? NSNumber)
+    }
 }

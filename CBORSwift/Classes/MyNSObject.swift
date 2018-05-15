@@ -31,9 +31,9 @@ public class NSByteString: NSObject {
 }
 
 public class NSSimpleValue: NSObject {
-    private let FALSECode: UInt8   = 0x14
-    private let TRUECode: UInt8    = 0x15
-    private let NILCode: UInt8     = 0x16
+    private static let FALSECode: UInt8   = 0x14
+    private static let TRUECode: UInt8    = 0x15
+    private static let NILCode: UInt8     = 0x16
     private var value: Bool?
     
     public init(_ value: NSNumber?) {
@@ -42,9 +42,9 @@ public class NSSimpleValue: NSObject {
     }
     
     @objc override func encode() -> String {
-        var byte = NILCode
+        var byte = NSSimpleValue.NILCode
         if value != nil {
-            byte = (value!) ? TRUECode : FALSECode
+            byte = (value!) ? NSSimpleValue.TRUECode : NSSimpleValue.FALSECode
         }
         var encodedArray = Encoder.prepareByteArray(major: .major7, measure: 0)
         encodedArray = [UInt8](encodedArray[0..<3])
@@ -56,4 +56,15 @@ public class NSSimpleValue: NSObject {
         return Data(bytes: encodedArray).binary_decimal.hex
     }
     
+    public class func decode(header: Int) -> NSNumber? {
+        let header = header + Int(0x14)
+        
+        if header == FALSECode {
+            return NSNumber(value: false)
+        }
+        if header == TRUECode {
+            return NSNumber(value: true)
+        }
+        return nil
+    }
 }
