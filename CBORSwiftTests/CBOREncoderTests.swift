@@ -337,4 +337,19 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertEqual(sorted[1].1, "776f726c64")
     }
     
+    //MARK: Simple Value encoding
+    func test_2_encodeSimpleBool() {
+        var encoded = CBOR.encode(NSSimpleValue(false))
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0xF4], encoded)
+        
+        encoded = CBOR.encode(NSSimpleValue(true))
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0xF5], encoded)
+        
+        encoded = CBOR.encode(NSSimpleValue(nil))
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0xF6], encoded)
+    }
+
 }

@@ -53,28 +53,6 @@ extension NSNumber {
     }
 }
 
-public class NSByteString: NSObject {
-    private var value: String = ""
-    
-    public init(_ value: String) {
-        super.init()
-        self.value = value
-    }
-    
-    @objc override func encode() -> String {
-        var byteArray = [UInt8]()
-        for offset in stride(from: 0, to: self.value.count, by: 2) {
-            let byte = value[offset..<offset+2].hex_decimal
-            byteArray.append(UInt8(byte))
-        }
-        let encodedArray = Encoder.prepareByteArray(major: .major2, measure: byteArray.count)
-        let headerData   = Data(bytes: encodedArray).binary_decimal.hex
-        let byteData     = Data(bytes: byteArray).hex
-        
-        return headerData.appending(byteData)
-    }
-}
-
 extension NSString {
     @objc override func encode() -> String {
         let encodedArray = Encoder.prepareByteArray(major: .major3, measure: self.length)

@@ -17,6 +17,7 @@
 		179837BF209A22310048DCD2 /* CBOR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179837BE209A22310048DCD2 /* CBOR.swift */; };
 		179837C1209A2A490048DCD2 /* Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179837C0209A2A490048DCD2 /* Encoder.swift */; };
 		179837C3209A502F0048DCD2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179837C2209A502F0048DCD2 /* Extensions.swift */; };
+		5CC7970520AB114A005F45C0 /* MyNSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC7970420AB114A005F45C0 /* MyNSObject.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		179837BE209A22310048DCD2 /* CBOR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBOR.swift; sourceTree = "<group>"; };
 		179837C0209A2A490048DCD2 /* Encoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encoder.swift; sourceTree = "<group>"; };
 		179837C2209A502F0048DCD2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		5CC7970420AB114A005F45C0 /* MyNSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNSObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				1747B8BF209C5BA9000663CA /* Decoder.swift */,
 				179837BB209A1CAD0048DCD2 /* MajorTypes.swift */,
 				179837C2209A502F0048DCD2 /* Extensions.swift */,
+				5CC7970420AB114A005F45C0 /* MyNSObject.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				179837BC209A1CAD0048DCD2 /* MajorTypes.swift in Sources */,
+				5CC7970520AB114A005F45C0 /* MyNSObject.swift in Sources */,
 				179837BF209A22310048DCD2 /* CBOR.swift in Sources */,
 				179837C1209A2A490048DCD2 /* Encoder.swift in Sources */,
 				1747B8C0209C5BA9000663CA /* Decoder.swift in Sources */,
