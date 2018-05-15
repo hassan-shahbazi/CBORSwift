@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "CBORSwift"
-  s.version      = "1.0.3"
+  s.version      = "1.0.4"
   s.summary      = "CBORSwift has implemented CBOR with Swift useful for iOS and macOS projects."
 
   # This description is used to generate tags and improve search results.
