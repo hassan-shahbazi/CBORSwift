@@ -10,7 +10,7 @@ The Concise Binary Object Representation (CBOR) is a data format whose design go
 ## Getting Started
 These instructions will help you to add `CBORSwift` to your current Xcode project in a few lines.
 
-**Please note that currently, only the majors 1 to 5 are supported. Other majors will be added gradually.** 
+**Please note that currently, the majors 1 to 5 are fully supported. Major 7 is supported for only Simple Values (True, False). Other majors will be added gradually.** 
 
 ### Installation
 #### Cocoapods
