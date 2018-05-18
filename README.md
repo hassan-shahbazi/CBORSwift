@@ -28,10 +28,22 @@ Extensions.swift
 MajorTypes.swift
 ```
 ## Usage
-Using `CBORSwift` is as simple as possible. You'll need to call 2 functions for *encoding* and *decoding*. The most important point is that **You have to use `NSObject` for encoding and decoding parameters.**
+Using `CBORSwift` is as simple as possible. You'll need to call 2 functions for *encoding* and *decoding*. The most important point is that **You have to use `NSObject` instances and subclasses for encoding and decoding parameters.** You can find more useful use cases in [Encoder](https://github.com/Hassaniiii/CBORSwift/blob/master/CBORSwiftTests/CBOREncoderTests.swift) and [Decoder](https://github.com/Hassaniiii/CBORSwift/blob/master/CBORSwiftTests/CBORDecoderTests.swift) unit tests. There is also a comprehensive CBOR example in the [General](https://github.com/Hassaniiii/CBORSwift/blob/master/CBORSwiftTests/CBORSwiftTests.swift) unit test.
+
+
+
+For all *Encoding* and *Decoding* situations, you can use `encode`-`decode` either as a function, or as an extension:
+```swift
+var encoded = CBOR.encode(NSOBJECT_ITEM)
+var decoded = CBOR.decode(NSOBJECT_ITEM)
+
+var encoded = NSOBJECT_ITEM.encode()
+var decoded = NSOBJECT_ITEM.decode()
+```
+
 
 #### Numbers (Positive, Negative)
-Just creat `NSNumber` instance and pass it to `encode`- `decode` function. Or, you can call `encode`-`decode` directly from the instance:
+Just create `NSNumber` instance and pass it to `encode`- `decode` function. Or, you can call `encode`-`decode` directly from the instance:
 
 ```swift
 var encoded = CBOR.encode(NSNumber(value: 30))
@@ -48,7 +60,7 @@ var decoded = [[0x39, 0x01, 0x00]].decode()
 ```
 
 #### Byte Strings
-You'll need to creat an instance of `NSByteString` class, and start playing with it:
+You'll need to create an instance of `NSByteString` class, and start playing with it:
 
 ```swift
 var str = NSByteString("2525")
@@ -92,6 +104,18 @@ var encoded = (["sure":"shahbazi", "name":"hassan"] as NSDictionary).encode()
 var decoded = CBOR.decode([0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64])
 var decoded = [0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64].decode()
 ```
+
+#### Bool
+Boolian values are `major7` and known as the *Simple Values*:
+
+````swift
+var encoded = CBOR.encode(NSSimpleValue(false))
+var encoded = CBOR.encode(NSSimpleValue(true))
+
+var decoded = CBOR.decode([0xF4])
+var decoded = CBOR.decode([0xF5])
+````
+
 
 ## Contribution
 Please ensure your pull request adheres to the following guidelines:
