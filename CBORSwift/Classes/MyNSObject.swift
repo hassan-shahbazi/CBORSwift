@@ -16,6 +16,10 @@ public class NSByteString: NSObject {
         self.value = value
     }
     
+    public func stringValue() -> String {
+        return self.value
+    }
+    
     @objc override func encode() -> String {
         var byteArray = [UInt8]()
         for offset in stride(from: 0, to: self.value.count, by: 2) {
@@ -39,6 +43,10 @@ public class NSSimpleValue: NSObject {
     public init(_ value: NSNumber?) {
         super.init()
         self.value = value?.boolValue
+    }
+    
+    public func stringValue() -> Bool {
+        return self.value!
     }
     
     @objc override func encode() -> String {
