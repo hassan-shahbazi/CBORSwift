@@ -9,6 +9,7 @@
 import XCTest
 @testable import CBORSwift
 
+// All tests are verified using http://cbor.me/ tool
 class CBORSwiftTests: XCTestCase {
     
     override func setUp() {
