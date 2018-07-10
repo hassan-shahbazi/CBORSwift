@@ -79,24 +79,32 @@ public class NSSimpleValue: NSObject {
 
 public class NSTag: NSObject {
     private var tag: Int! = -1
-    private var value: [UInt8]!
+    private var value: NSObject!
     
     public init(tag: Int, _ value: NSObject) {
         super.init()
         
         self.tag = tag
-        self.value = value.encode()
+        self.value = value
     }
     
     @objc internal override func encode() -> String {
         if tag > 0 {
             let encodedArray = Encoder.prepareByteArray(major: .major6, measure: self.tag)
             let headerData   = Data(bytes: encodedArray).binary_decimal.hex
-            let encodedValue = Data(bytes: self.value).hex
+            let encodedValue = Data(bytes: self.value.encode()!).hex
             
             return headerData.appending(encodedValue)
         }
         return ""
+    }
+    
+    public func tagValue() -> Int {
+        return self.tag
+    }
+    
+    public func objectValue() -> NSObject {
+        return self.value
     }
 }
 

@@ -311,7 +311,7 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertEqual([[10], [-9, 0]], decoded as? NSArray)
     }
 
-    //MARK: Map decoding
+    //MARK:- Map decoding
     func test_2_decodeMap() {
         var decoded = CBOR.decode([0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
                                           0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64])
@@ -335,7 +335,38 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertEqual(["item0": 127, "item1": "string", 5: "number", 18: 98], decoded as? NSDictionary)
     }
 
-    //MARK: Simple Value encoding
+    //MARK:- Tagged Value decoding
+    func test_2_decodeTaggedValue() {
+        var decoded = CBOR.decode([0xC5, 0x0A])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(5, (decoded as? NSTag)?.tagValue())
+        XCTAssertEqual(NSNumber(value: 10), (decoded as? NSTag)?.objectValue())
+        
+        decoded = CBOR.decode([0xD9, 0x02, 0x6D, 0x18, 0xE9])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(621, (decoded as? NSTag)?.tagValue())
+        XCTAssertEqual(NSNumber(value: 233), (decoded as? NSTag)?.objectValue())
+        
+        decoded = CBOR.decode([0xDA, 0x00, 0x01, 0x22, 0x3c,
+                               0xA2, 0x64, 0x6E, 0x61, 0x6D, 0x65,
+                               0x66, 0x68, 0x61, 0x73, 0x73, 0x61, 0x6E,
+                               0x64, 0x73, 0x75, 0x72, 0x65,
+                               0x68, 0x73, 0x68, 0x61, 0x68, 0x62, 0x61, 0x7A, 0x69])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(74300, (decoded as? NSTag)?.tagValue())
+        XCTAssertEqual(["sure":"shahbazi", "name":"hassan"] as NSDictionary, (decoded as? NSTag)?.objectValue())
+        
+        decoded = CBOR.decode([0xD9, 0x03, 0x99,
+                               0x58, 0x20,
+                               0x68, 0x71, 0x34, 0x96, 0x82, 0x22, 0xEC, 0x17, 0x20, 0x2E,
+                               0x42, 0x50, 0x5F, 0x8E, 0xD2, 0xB1, 0x6A, 0xE2, 0x2F, 0x16,
+                               0xBB, 0x05, 0xB8, 0x8C, 0x25, 0xDB, 0x9E, 0x60, 0x26, 0x45, 0xF1, 0x41])
+        XCTAssertNotNil(decoded)
+        XCTAssertEqual(921, (decoded as? NSTag)?.tagValue())
+        XCTAssertEqual("687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141".lowercased() as NSString, (decoded as? NSTag)?.objectValue())
+    }
+    
+    //MARK:- Simple Value encoding
     func test_2_decodeSimpleBool() {
         var decoded = CBOR.decode([0xF4])
         XCTAssertNotNil(decoded)
