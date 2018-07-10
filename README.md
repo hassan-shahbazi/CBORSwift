@@ -55,8 +55,8 @@ var encoded = NSNumber(value: -42949295).encode()
 var decoded = CBOR.decode([0x0A])
 var decoded = [0x0A].decode()
 
-var decoded = CBOR.decode([[0x39, 0x01, 0x00]])
-var decoded = [[0x39, 0x01, 0x00]].decode()
+var decoded = CBOR.decode([0x39, 0x01, 0x00])
+var decoded = [0x39, 0x01, 0x00].decode()
 ```
 
 #### Byte Strings

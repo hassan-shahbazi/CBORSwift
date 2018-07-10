@@ -6,6 +6,8 @@
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
+import Foundation
+
 public class CBOR: NSObject {
     
     //MARK:- Encoder

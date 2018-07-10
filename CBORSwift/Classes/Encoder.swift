@@ -6,6 +6,8 @@
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
+import Foundation
+
 class Encoder: NSObject {
     class func prepareByteArray(major: MajorType, measure: Int) -> [UInt8] {
         var encoded = MajorTypes(major).get().bytes

@@ -6,6 +6,8 @@
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
+import Foundation
+
 class Decoder: NSObject {
     private var body = [UInt8]()
     

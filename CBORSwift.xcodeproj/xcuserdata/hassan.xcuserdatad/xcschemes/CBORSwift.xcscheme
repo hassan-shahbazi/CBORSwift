@@ -39,9 +39,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "CBORDecoderTests/test_2_decodeMap()">
-               </Test>
-               <Test
                   Identifier = "CBORSwiftTests/test_2_generalDecode()">
                </Test>
             </SkippedTests>

@@ -5,6 +5,9 @@
 //  Created by Hassan Shahbazi on 5/2/18.
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
+
+import Foundation
+
 enum MajorType: String {
     case major0 = "000" //unsigned integer
     case major1 = "001" //negative integer

@@ -6,7 +6,7 @@
 //  Copyright © 2018 Hassan Shahbazi. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 public class NSByteString: NSObject {
     private var value: String = ""
