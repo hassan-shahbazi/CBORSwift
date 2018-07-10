@@ -20,7 +20,7 @@ public class NSByteString: NSObject {
         return self.value
     }
     
-    @objc override func encode() -> String {
+    @objc internal override func encode() -> String {
         var byteArray = [UInt8]()
         for offset in stride(from: 0, to: self.value.count, by: 2) {
             let byte = value[offset..<offset+2].hex_decimal
@@ -49,7 +49,7 @@ public class NSSimpleValue: NSObject {
         return self.value!
     }
     
-    @objc override func encode() -> String {
+    @objc internal override func encode() -> String {
         var byte = NSSimpleValue.NILCode
         if value != nil {
             byte = (value!) ? NSSimpleValue.TRUECode : NSSimpleValue.FALSECode
@@ -76,3 +76,33 @@ public class NSSimpleValue: NSObject {
         return nil
     }
 }
+
+public class NSTag: NSObject {
+    private var tag: Int! = -1
+    private var value: [UInt8]!
+    
+    public init(tag: Int, _ value: NSObject) {
+        super.init()
+        
+        self.tag = tag
+        self.value = value.encode()
+    }
+    
+    @objc internal override func encode() -> String {
+        if tag > 0 {
+            let encodedArray = Encoder.prepareByteArray(major: .major6, measure: self.tag)
+            let headerData   = Data(bytes: encodedArray).binary_decimal.hex
+            let encodedValue = Data(bytes: self.value).hex
+            
+            return headerData.appending(encodedValue)
+        }
+        return ""
+    }
+}
+
+
+
+
+
+
+

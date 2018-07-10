@@ -305,7 +305,7 @@ class CBOREncoderTests: XCTestCase {
         
     }
     
-    //MARK: Map encoding
+    //MARK:- Map encoding
     func test_2_encodeMap() {
         var encoded = CBOR.encode(["hello": "world"] as NSDictionary)
         XCTAssertNotNil(encoded)
@@ -337,7 +337,33 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertEqual(sorted[1].1, "776f726c64")
     }
     
-    //MARK: Simple Value encoding
+    //MARK:- Tagged Value encoding
+    func test_2_encodeTaggedValue() {
+        var tag = NSTag(tag: 5, NSNumber(value: 10))
+        var encoded = CBOR.encode(tag)
+        XCTAssertEqual(encoded, [0xC5, 0x0A])
+        
+        tag = NSTag(tag: 921, NSByteString("687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141"))
+        encoded = CBOR.encode(tag)
+        XCTAssertEqual(encoded, [0xD9, 0x03, 0x99,
+                                 0x58, 0x20,
+                                 0x68, 0x71, 0x34, 0x96, 0x82, 0x22, 0xEC, 0x17, 0x20, 0x2E,
+                                 0x42, 0x50, 0x5F, 0x8E, 0xD2, 0xB1, 0x6A, 0xE2, 0x2F, 0x16,
+                                 0xBB, 0x05, 0xB8, 0x8C, 0x25, 0xDB, 0x9E, 0x60, 0x26, 0x45, 0xF1, 0x41])
+        
+        tag = NSTag(tag: 74300, ["sure":"shahbazi", "name":"hassan"] as NSDictionary)
+        encoded = CBOR.encode(tag)
+        XCTAssertEqual(encoded, [0xDA, 0x00, 0x01, 0x22, 0x3c,
+                                 0xA2, 0x64, 0x6E, 0x61, 0x6D, 0x65,
+                                 0x66, 0x68, 0x61, 0x73, 0x73, 0x61, 0x6E,
+                                 0x64, 0x73, 0x75, 0x72, 0x65,
+                                 0x68, 0x73, 0x68, 0x61, 0x68, 0x62, 0x61, 0x7A, 0x69])
+        
+        tag = NSTag(tag: -2, NSNumber(value: 10))
+        XCTAssertEqual(tag.encode(), [])
+    }
+    
+    //MARK:- Simple Value encoding
     func test_2_encodeSimpleBool() {
         var encoded = CBOR.encode(NSSimpleValue(false))
         XCTAssertNotNil(encoded)

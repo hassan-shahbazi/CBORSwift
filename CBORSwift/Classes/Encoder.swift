@@ -44,12 +44,9 @@ extension NSObject: Any {
 
 extension NSNumber {
     @objc override func encode() -> String {
-        var major: MajorType = .major0
-        var measure = self.intValue
-        if (self.intValue < 0) {
-            major = .major1
-            measure = (self.intValue * -1) - 1
-        }
+        let major: MajorType = (self.intValue < 0) ? .major1 : .major0
+        let measure = (self.intValue < 0) ? (self.intValue * -1) - 1 : self.intValue
+
         let encodedArray = Encoder.prepareByteArray(major: major, measure: measure)
         return Data(bytes: encodedArray).binary_decimal.hex
     }

@@ -37,11 +37,6 @@
                BlueprintName = "CBORSwiftTests"
                ReferencedContainer = "container:CBORSwift.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "CBORSwiftTests/test_2_generalDecode()">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
