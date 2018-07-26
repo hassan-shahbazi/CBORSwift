@@ -106,7 +106,7 @@ var decoded = [0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x65, 0x77, 0x6F, 0x72,
 ```
 
 #### Tagged values - *major 6*
-If you want to encode and decode a tagged value, you can easily. The type of tagged values are in `NSTag` type.
+To encode or decode a tagged value, just create a `NSTag` instance, specify the tags and the values, and call `encode`/`decode` functions.
 
 ```swift
 var encoded = CBOR.encode(NSTag(tag: 5, NSNumber(value: 10))
