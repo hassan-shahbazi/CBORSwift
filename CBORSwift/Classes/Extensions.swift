@@ -69,13 +69,18 @@ extension String {
             bits.append(UInt8(chrInt))
         }
 
-        let bitsSize = bits.count % 8
-        if bitsSize == 0 {
+        if bits.count % 8 == 0 {
             return bits
         }
         
         var bitDiff = (bits.count / 8) + 1
-        if bitDiff > 2 {
+        if bitDiff > 8 {
+            bitDiff = 16
+        }
+        else if bitDiff > 4 {
+            bitDiff = 8
+        }
+        else if bitDiff > 2 {
             bitDiff = 4
         }
         

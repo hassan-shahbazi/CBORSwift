@@ -20,19 +20,30 @@ class Encoder: NSObject {
         return encoded
     }
     
-    private class func prepareHeaderByteArray(bytes: inout [UInt8], measure: Int) {
-        let upperBound: UInt64 = 4294967295
-        
-        if measure >= 0 && measure <= 23 {}
-        else if measure >= 24 && measure <= 255 { bytes = 24.decimal_binary }
-        else if measure >= 256 && measure <= 65535 { bytes = 25.decimal_binary }
-        else if measure >= 65536 && measure <= upperBound { bytes = 26.decimal_binary }
+    class func prepareEncodedResponse(encodedArray: inout [UInt8]) -> String {
+        var response = ""
+        if encodedArray.count > 64 {
+            response = [UInt8](encodedArray[0..<64]).binary_decimal.hex
+            encodedArray = [UInt8](encodedArray[64..<encodedArray.count])
+        }
+        response.append(Data(bytes: encodedArray).binary_decimal.hex)
+        return response
     }
     
     class func getIncludedEncodings(item: AnyObject) -> String {
         var data = ""
         data.append(item.encode())
         return data
+    }
+}
+
+private extension Encoder {
+    private class func prepareHeaderByteArray(bytes: inout [UInt8], measure: Int) {
+        if measure >= 0 && measure <= 23 {}
+        else if measure >= 24 && measure <= UInt8.max { bytes = 24.decimal_binary }
+        else if measure >= UInt16.min && measure <= UInt16.max { bytes = 25.decimal_binary }
+        else if measure >= UInt32.min && measure <= UInt32.max { bytes = 26.decimal_binary }
+        else if measure >= UInt64.min && measure <= UInt64.max { bytes = 27.decimal_binary }
     }
 }
 
@@ -47,8 +58,10 @@ extension NSNumber {
         let major: MajorType = (self.intValue < 0) ? .major1 : .major0
         let measure = (self.intValue < 0) ? (self.intValue * -1) - 1 : self.intValue
 
-        let encodedArray = Encoder.prepareByteArray(major: major, measure: measure)
-        return Data(bytes: encodedArray).binary_decimal.hex
+        var encodedArray = Encoder.prepareByteArray(major: major, measure: measure)
+        let response = Encoder.prepareEncodedResponse(encodedArray: &encodedArray)
+        
+        return response
     }
 }
 
