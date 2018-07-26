@@ -99,6 +99,16 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertEqual([0x1A, 0x02, 0x8F, 0x5A, 0xAF], encoded)
     }
     
+    func test_6_encodeBigIntegers() {
+        var encoded = CBOR.encode(NSNumber(value: 1531842146400))
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0x1B, 0x00, 0x00, 0x01, 0x64, 0xA8, 0xE8, 0x30, 0x60], encoded)
+        
+        encoded = CBOR.encode(NSNumber(value: 999999999999999999))
+        XCTAssertNotNil(encoded)
+        XCTAssertEqual([0x1B, 0x0D, 0xE0, 0xB6, 0xB3, 0xA7, 0x63, 0xFF, 0xFF], encoded)
+    }
+    
     //MARK:- Negative integer encoding
     func test_2_encodeSimpleNeg() {
         var encoded = CBOR.encode(NSNumber(value: -1))

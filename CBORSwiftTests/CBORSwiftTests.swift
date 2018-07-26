@@ -38,6 +38,14 @@ class CBORSwiftTests: XCTestCase {
         XCTAssertEqual(Data(bytes: [0x01, 0x00, 0x01]), major.get())
     }
     
+    func test_2_convertions() {
+        var binary = "111111111111111111111111111111111111111111111111111111111111111"
+        XCTAssertEqual(9223372036854775807, binary.bytes.binary_decimal)
+        
+        binary = "0001101100000000000000010110010010101000111010000011000001100000"
+        XCTAssertEqual(1945556570866200672, binary.bytes.binary_decimal)
+    }
+    
     func test_9_FinalComprehensiveTest_Encode() {
         let id_1 = NSByteString("687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141".lowercased())
         
