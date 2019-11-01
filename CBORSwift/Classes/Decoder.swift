@@ -163,6 +163,11 @@ extension Decoder {
             len = hexLen.hex_decimal
             offset += 3
         }
+        else if header == 27 {
+            let hexLen = Int(body[0]).hex.appending(Int(body[1]).hex).appending(Int(body[2]).hex).appending(Int(body[3]).hex).appending(Int(body[4]).hex)
+            len = hexLen.hex_decimal
+            offset += 4
+        }
         
         self.body = [UInt8](self.body[offset..<self.body.count])
     }
