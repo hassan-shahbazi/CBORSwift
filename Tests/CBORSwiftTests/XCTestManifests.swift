@@ -4,6 +4,7 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
     return [
         testCase(CBORSwiftTests.allTests),
+        testCase(CBOREncoderTests.allTests),
     ]
 }
 #endif
