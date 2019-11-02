@@ -37,7 +37,9 @@ extension Int {
 }
 
 extension String {
-
+    var encode: String {
+        return Data(CBOREncoder.byteArray(.major3, self.count)).binary_decimal.hex + Data(self.ascii_bytes).hex
+    }
 }
 
 extension Data {

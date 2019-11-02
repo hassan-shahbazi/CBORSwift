@@ -115,7 +115,7 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertEqual([0x1A, 0x02, 0x8F, 0x5A, 0xAF], encoded2)
     }
 
-    func testZEncodeBigIntegers() {
+    func testEncodeBigIntegers() {
         guard let encoded1 = try? CBOR.encode(1531842146400) else {
             return XCTFail()
         }
@@ -242,25 +242,33 @@ class CBOREncoderTests: XCTestCase {
                         0x6A, 0xE2, 0x2F, 0x16, 0xBB, 0x05, 0xB8, 0x8C, 0x25, 0xDB,
                         0x9E, 0x60, 0x26, 0x45, 0xF1, 0x41], encoded)
     }
-    
+*/    
     //MARK:- Text string encoding
     func test_2_encodeTextString() {
-        var encoded = CBOR.encode("hello" as NSString)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F], encoded)
+        guard let encoded1 = try? CBOR.encode("hello") else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded1)
+        XCTAssertEqual([0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F], encoded1)
         
-        encoded = CBOR.encode("name" as NSString)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x64, 0x6E, 0x61, 0x6D, 0x65], encoded)
+        guard let encoded2 = try? CBOR.encode("name") else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded2)
+        XCTAssertEqual([0x64, 0x6E, 0x61, 0x6D, 0x65], encoded2)
         
-        encoded = CBOR.encode("let's do a more complex test" as NSString)
-        XCTAssertNotNil(encoded)
+        guard let encoded3 = try? CBOR.encode("let's do a more complex test") else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded3)
         XCTAssertEqual([0x78, 0x1C, 0x6C, 0x65, 0x74, 0x27, 0x73, 0x20, 0x64, 0x6F,
                         0x20, 0x61, 0x20, 0x6D, 0x6F, 0x72, 0x65, 0x20, 0x63, 0x6F,
-                        0x6D, 0x70, 0x6C, 0x65, 0x78, 0x20, 0x74, 0x65, 0x73, 0x74], encoded)
+                        0x6D, 0x70, 0x6C, 0x65, 0x78, 0x20, 0x74, 0x65, 0x73, 0x74], encoded3)
         
-        encoded = CBOR.encode("a simple string with a large length, trying to test all possible situations. Thus, I have to double this string. a simple string with a large length, trying to test all possible situations. Thus, I have to double this string. a simple string with a large length, trying to test all possible situations. Thus, I have to double this string"  as NSString)
-        XCTAssertNotNil(encoded)
+        guard let encoded4 = try? CBOR.encode("a simple string with a large length, trying to test all possible situations. Thus, I have to double this string. a simple string with a large length, trying to test all possible situations. Thus, I have to double this string. a simple string with a large length, trying to test all possible situations. Thus, I have to double this string") else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded4)
         XCTAssertEqual([0x79, 0x01, 0x51, 0x61, 0x20, 0x73, 0x69, 0x6D, 0x70,
                         0x6C, 0x65, 0x20, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67,
                         0x20, 0x77, 0x69, 0x74, 0x68, 0x20, 0x61, 0x20, 0x6C,
@@ -298,9 +306,9 @@ class CBOREncoderTests: XCTestCase {
                         0x54, 0x68, 0x75, 0x73, 0x2C, 0x20, 0x49, 0x20, 0x68,
                         0x61, 0x76, 0x65, 0x20, 0x74, 0x6F, 0x20, 0x64, 0x6F,
                         0x75, 0x62, 0x6C, 0x65, 0x20, 0x74, 0x68, 0x69, 0x73,
-                        0x20, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67], encoded)
+                        0x20, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67], encoded4)
     }
-    
+ /*   
     //MARK:- Array encoding
     func test_2_encodeStringArray() {
         var encoded = CBOR.encode(["hello"] as NSArray)
