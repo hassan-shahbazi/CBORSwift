@@ -65,28 +65,26 @@ extension Array: CBOREncodable where Element: CBOREncodable {
     }
 }
 
-extension Dictionary {
+extension Dictionary: CBOREncodable where Key: CBOREncodable, Value: CBOREncodable {
 
+    private var encodeHeader: String {
+        return Data(CBOREncoder.byteArray(.major5, self.keys.count)).binary_decimal.hex
+    }
+
+    public var encode: String {
+        return encodeHeader + self.map { (key: CBOREncodable, value: CBOREncodable) in
+                                            (key.encode, value.encode)
+                                    }
+                                    .sorted {
+                                        if $0.0 != $1.0 {
+                                            return $0.0 < $1.0
+                                        } else if $0.1 != $1.1 {
+                                            return $0.1 < $1.1
+                                        }
+                                        return $0.0 == $1.0
+                                    }
+                                    .reduce(into: "") { (result: inout String, dictionary: (String, String)) in
+                                        result += dictionary.0 + dictionary.1
+                                    }
+    }
 }
-
-// extension NSDictionary {
-//     @objc override func encode() -> String {
-//         let encodedArray = Encoder.prepareByteArray(major: .major5, measure: self.allKeys.count)
-//         return (Data(bytes: encodedArray).binary_decimal.hex).appending(getItemsEncoding())
-//     }
-    
-//     private func getItemsEncoding() -> String {
-//         var data = ""
-//         var key_value = [String:String]()
-//         for (key, value) in self {
-//             key_value[Encoder.getIncludedEncodings(item: key as AnyObject)] = Encoder.getIncludedEncodings(item: value as AnyObject)
-//         }
-        
-//         let dic = key_value.valueKeySorted
-//         for item in dic {
-//             data.append(item.0)
-//             data.append(item.1)
-//         }
-//         return data
-//     }
-// }

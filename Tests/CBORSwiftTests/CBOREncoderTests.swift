@@ -356,53 +356,26 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertNotNil(encoded2)
         XCTAssertEqual([0x82, 0x81, 0x0A, 0x82, 0x28, 0x00], encoded2)
     }
-/*    
-    func testEncodeMapArray() {
-        guard let encoded = try? CBOR.encode([["surename":"shahbazi", "name":"hassan", "age":27]]) else {
+
+    //MARK:- Map encoding
+    func testEncodeMap() {
+        guard let encoded1 = try? CBOR.encode(["hello": "world"]) else {
             return XCTFail()
         }
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x81, 0xA3, 0x63, 0x61, 0x67, 0x65,
-                        0x18, 0x1B,
-                        0x64, 0x6E, 0x61, 0x6D, 0x65,
-                        0x66, 0x68, 0x61, 0x73, 0x73, 0x61, 0x6E,
-                        0x68, 0x73, 0x75, 0x72, 0x65, 0x6E, 0x61, 0x6D, 0x65,
-                        0x68, 0x73, 0x68, 0x61, 0x68, 0x62, 0x61, 0x7A, 0x69], encoded)
-        
-    }
-    
-    //MARK:- Map encoding
-    func test_2_encodeMap() {
-        var encoded = CBOR.encode(["hello": "world"] as NSDictionary)
-        XCTAssertNotNil(encoded)
+        XCTAssertNotNil(encoded1)
         XCTAssertEqual([0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
-                        0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64], encoded)
+                        0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64], encoded1)
         
-        encoded = CBOR.encode(["sure":"shahbazi", "name":"hassan"] as NSDictionary)
-        XCTAssertNotNil(encoded)
+        guard let encoded2 = try? CBOR.encode(["sure":"shahbazi", "name":"hassan"]) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded2)
         XCTAssertEqual([0xA2, 0x64, 0x6E, 0x61, 0x6D, 0x65,
                         0x66, 0x68, 0x61, 0x73, 0x73, 0x61, 0x6E,
                         0x64, 0x73, 0x75, 0x72, 0x65,
-                        0x68, 0x73, 0x68, 0x61, 0x68, 0x62, 0x61, 0x7A, 0x69], encoded)
-        
-        encoded = CBOR.encode(["item0": 127, "item1": "string", 5: "number", 18: 98] as NSDictionary)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0xA4, 0x05, 0x66, 0x6E, 0x75, 0x6D, 0x62, 0x65, 0x72,
-                        0x12, 0x18, 0x62,
-                        0x65, 0x69, 0x74, 0x65, 0x6D, 0x30,
-                        0x18, 0x7F,
-                        0x65, 0x69, 0x74, 0x65, 0x6D, 0x31,
-                        0x66, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67], encoded)
+                        0x68, 0x73, 0x68, 0x61, 0x68, 0x62, 0x61, 0x7A, 0x69], encoded2)
     }
-    
-    func test_3_sortMapItems() {
-        let dict: Dictionary = ["67": "776f726c64", "65": "68656c6c6f"]
-        let sorted = dict.valueKeySorted
-        
-        XCTAssertEqual(sorted[0].1, "68656c6c6f")
-        XCTAssertEqual(sorted[1].1, "776f726c64")
-    }
-    
+   /*
     //MARK:- Tagged Value encoding
     func test_2_encodeTaggedValue() {
         var tag = NSTag(tag: 5, NSNumber(value: 10))
