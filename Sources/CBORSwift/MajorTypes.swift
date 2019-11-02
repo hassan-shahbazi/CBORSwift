@@ -1,6 +1,6 @@
 import Foundation
 
-enum MajorType: String {
+enum MajorTypes: String {
     case major0 = "000" //unsigned integer
     case major1 = "001" //negative integer
     case major2 = "010" //byte string
@@ -11,10 +11,10 @@ enum MajorType: String {
     case major7 = "111" //floating point numbers and simple data types
 }
 
-struct MajorTypes {
+struct MajorType {
 
-    private let type: MajorType
-    init(_ type: MajorType) {
+    private let type: MajorTypes
+    init(_ type: MajorTypes) {
         self.type = type
     }
 
@@ -23,7 +23,7 @@ struct MajorTypes {
         return Data(bytes[bytes.count-3..<bytes.count])
     }
 
-    public var typeEnum: (([UInt8]) -> MajorType?) = { byteArray in
-        return MajorType(rawValue: byteArray[..<3].map { "\($0)" }.joined(separator: ""))
+    public var typeEnum: (([UInt8]) -> MajorTypes?) = { byteArray in
+        return MajorTypes(rawValue: byteArray[..<3].map { "\($0)" }.joined(separator: ""))
     }
 }

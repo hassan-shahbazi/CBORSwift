@@ -10,9 +10,9 @@ private struct CBOREncoder {
         return []
     }
 
-    static func byteArray(_ major: MajorType, _ measure: Int = 0) -> [UInt8] {
+    static func byteArray(_ major: MajorTypes, _ measure: Int = 0) -> [UInt8] {
         let bytes = headerByteArray(measure) + measure.decimal_binary
-        return MajorTypes(major).typeData.bytes + [UInt8](bytes[3..<bytes.count])
+        return MajorType(major).typeData.bytes + [UInt8](bytes[3..<bytes.count])
     }
     
     static func encodeArray(_ array: inout [UInt8]) -> String {
@@ -24,6 +24,8 @@ private struct CBOREncoder {
         return response + array.binary_decimal.hex
     }
 }
+
+// MARK: - Native supports
 
 extension Int: CBOREncodable {
     public var encode: String {
@@ -86,5 +88,26 @@ extension Dictionary: CBOREncodable where Key: CBOREncodable, Value: CBOREncodab
                                     .reduce(into: "") { (result: inout String, dictionary: (String, String)) in
                                         result += dictionary.0 + dictionary.1
                                     }
+    }
+}
+
+extension TaggedValue: CBOREncodable {
+    public var encode: String {
+        guard self.tag > 0 else { return "" }
+        return Data(CBOREncoder.byteArray(.major6, self.tag)).binary_decimal.hex + self.value.encode
+    }
+}
+
+extension SimpleValue: CBOREncodable {
+    public var encode: String {
+        return Data([UInt8](CBOREncoder.byteArray(.major7)[..<3]) + self.valueData.bytes).binary_decimal.hex
+    }
+}
+
+// MARK: - Additional supports
+
+extension CBOREncodable {
+    public var encode: String {
+        return ""
     }
 }

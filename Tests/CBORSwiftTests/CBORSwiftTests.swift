@@ -5,13 +5,13 @@ import XCTest
 class CBORSwiftTests: XCTestCase {
     
     func testSetMajorType() {
-        let major1 = MajorTypes(.major0)
+        let major1 = MajorType(.major0)
         XCTAssertEqual(Data([0x00, 0x00, 0x00]), major1.typeData)
         
-        let major2 = MajorTypes(.major1)
+        let major2 = MajorType(.major1)
         XCTAssertEqual(Data([0x00, 0x00, 0x01]), major2.typeData)
         
-        let major3 = MajorTypes(.major5)
+        let major3 = MajorType(.major5)
         XCTAssertEqual(Data([0x01, 0x00, 0x01]), major3.typeData)
     }
     

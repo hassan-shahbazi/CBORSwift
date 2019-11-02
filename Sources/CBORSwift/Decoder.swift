@@ -35,3 +35,21 @@ extension Dictionary: CBORDecodable where Key: CBORDecodable, Value: CBORDecodab
         return ["11":"11"]
     }
 }
+
+extension SimpleValue: CBORDecodable {
+    public var decode: CBOREncodable {
+        return SimpleValue(.null)
+    }
+}
+
+extension TaggedValue: CBORDecodable {
+    public var decode: CBOREncodable {
+        return TaggedValue(tag: 5, 10)
+    }
+}
+
+// extension Decodable: CBORDecodable {
+//     public var encode: Encodable {
+//         return ""
+//     }
+// }
