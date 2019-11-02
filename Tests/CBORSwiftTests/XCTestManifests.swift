@@ -5,6 +5,7 @@ public func allTests() -> [XCTestCaseEntry] {
     return [
         testCase(CBORSwiftTests.allTests),
         testCase(CBOREncoderTests.allTests),
+        testCase(CBORStructEncoderTests.allTests)
     ]
 }
 #endif
