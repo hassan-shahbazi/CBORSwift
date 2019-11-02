@@ -25,8 +25,8 @@ private struct CBOREncoder {
     }
 }
 
-extension Int {
-    var encode: String {
+extension Int: CBOREncodable {
+    public var encode: String {
         var encodedArray = CBOREncoder.byteArray((isNegative) ? .major1 : .major0, (isNegative) ? (self * -1) - 1 : self)
         return CBOREncoder.encodeArray(&encodedArray)
     }
@@ -36,53 +36,38 @@ extension Int {
     }
 }
 
-extension String {
-    var encode: String {
+extension ByteString: CBOREncodable {
+    public var encode: String {
+        let byteString = stride(from: 0, to: self.string.count, by: 2).map { UInt8(self.string[$0..<$0+2].hex_decimal) }
+        return Data(CBOREncoder.byteArray(.major2, byteString.count)).binary_decimal.hex + Data(byteString).hex
+    }
+}
+
+extension String: CBOREncodable {
+    public var encode: String {
         return Data(CBOREncoder.byteArray(.major3, self.count)).binary_decimal.hex + Data(self.ascii_bytes).hex
     }
 }
 
-extension Data {
-
+extension Data: CBOREncodable {
+    public var encode: String {
+        return Data(CBOREncoder.byteArray(.major2, self.count)).binary_decimal.hex
+    }
 }
 
-extension Array {
+extension Array: CBOREncodable where Element: CBOREncodable {
+    private var encodeHeader: String {
+        return Data(CBOREncoder.byteArray(.major4, self.count)).binary_decimal.hex
+    }
 
+    public var encode: String {
+        return encodeHeader + self.map { $0.encode }.joined(separator: "")
+    }
 }
 
 extension Dictionary {
 
 }
-// extension NSNumber {
-//     @objc override func encode() -> String {
-        
-//     }
-// }
-
-// extension NSString {
-//     @objc override func encode() -> String {
-//         let encodedArray = Encoder.prepareByteArray(major: .major3, measure: self.length)
-//         let headerData  = Data(bytes: encodedArray).binary_decimal.hex
-//         let strData     = Data(bytes: self.ascii_bytes).hex
-        
-//         return headerData.appending(strData)
-//     }
-// }
-
-// extension NSArray {
-//     @objc override func encode() -> String {
-//         let encodedArray = Encoder.prepareByteArray(major: .major4, measure: self.count)
-//         return (Data(bytes: encodedArray).binary_decimal.hex).appending(getItemsEncoding())
-//     }
-    
-//     private func getItemsEncoding() -> String {
-//         var data = ""
-//         for item in self {
-//             data.append(Encoder.getIncludedEncodings(item: item as AnyObject))
-//         }
-//         return data
-//     }
-// }
 
 // extension NSDictionary {
 //     @objc override func encode() -> String {
@@ -103,13 +88,5 @@ extension Dictionary {
 //             data.append(item.1)
 //         }
 //         return data
-//     }
-// }
-
-// extension NSData {
-//     @objc override func encode() -> String {
-//         let data = self as Data
-//         let encodedArray = Encoder.prepareByteArray(major: .major2, measure: data.count)
-//         return Data(bytes: encodedArray).binary_decimal.hex
 //     }
 // }

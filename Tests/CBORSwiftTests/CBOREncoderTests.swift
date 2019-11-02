@@ -130,7 +130,7 @@ class CBOREncoderTests: XCTestCase {
     }
 
     //MARK:- Negative integer encoding
-    func test_2_encodeSimpleNeg() {
+    func testEncodeSimpleNeg() {
         guard let encoded1 = try? CBOR.encode(-1) else {
             return XCTFail()
         }
@@ -156,7 +156,7 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertEqual([0x37], encoded4)
     }
     
-    func test_3_encodeStage1Neg() {
+    func testEncodeStage1Neg() {
         guard let encoded1 = try? CBOR.encode(-25) else {
             return XCTFail()
         }
@@ -182,7 +182,7 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertEqual([0x38, 0xFF], encoded4)
     }
     
-    func test_4_encodeStage2Neg() {
+    func testEncodeStage2Neg() {
         guard let encoded1 = try? CBOR.encode(-257) else {
             return XCTFail()
         }
@@ -208,7 +208,7 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertEqual([0x39, 0xFF, 0xDB], encoded4)
     }
     
-    func test_5_encodeStage3Neg() {
+    func testEncodeStage3Neg() {
         guard let encoded1 = try? CBOR.encode(-65537) else {
             return XCTFail()
         }
@@ -221,30 +221,33 @@ class CBOREncoderTests: XCTestCase {
         XCTAssertNotNil(encoded2)
         XCTAssertEqual([0x3A, 0x02, 0x8F, 0x5A, 0xAE], encoded2)
     }
-/*    
+    
     //MARK:- Byte string encoding
-    func test_2_encodeByteString() {
-        var str = NSByteString("2525")
-        var encoded = CBOR.encode(str)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x42, 0x25, 0x25], encoded)
+    func testEncodeByteString() {
+        guard let encoded1 = try? CBOR.encode(ByteString("2525")) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded1)
+        XCTAssertEqual([0x42, 0x25, 0x25], encoded1)
         
-        str = NSByteString("25253015")
-        encoded = CBOR.encode(str)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x44, 0x25, 0x25, 0x30, 0x15], encoded)
+        guard let encoded2 = try? CBOR.encode(ByteString("25253015")) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded2)
+        XCTAssertEqual([0x44, 0x25, 0x25, 0x30, 0x15], encoded2)
         
-        str = NSByteString("687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141")
-        encoded = CBOR.encode(str)
-        XCTAssertNotNil(encoded)
+        guard let encoded3 = try? CBOR.encode(ByteString("687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141")) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded3)
         XCTAssertEqual([0x58, 0x20, 0x68, 0x71, 0x34, 0x96, 0x82, 0x22,
                         0xEC, 0x17, 0x20, 0x2E, 0x42, 0x50, 0x5F, 0x8E, 0xD2, 0xB1,
                         0x6A, 0xE2, 0x2F, 0x16, 0xBB, 0x05, 0xB8, 0x8C, 0x25, 0xDB,
-                        0x9E, 0x60, 0x26, 0x45, 0xF1, 0x41], encoded)
+                        0x9E, 0x60, 0x26, 0x45, 0xF1, 0x41], encoded3)
     }
-*/    
+    
     //MARK:- Text string encoding
-    func test_2_encodeTextString() {
+    func testEncodeTextString() {
         guard let encoded1 = try? CBOR.encode("hello") else {
             return XCTFail()
         }
@@ -308,60 +311,56 @@ class CBOREncoderTests: XCTestCase {
                         0x75, 0x62, 0x6C, 0x65, 0x20, 0x74, 0x68, 0x69, 0x73,
                         0x20, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67], encoded4)
     }
- /*   
+    
     //MARK:- Array encoding
-    func test_2_encodeStringArray() {
-        var encoded = CBOR.encode(["hello"] as NSArray)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x81, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F], encoded)
+    func testEncodeStringArray() {
+        guard let encoded1 = try? CBOR.encode(["hello"]) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded1)
+        XCTAssertEqual([0x81, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F], encoded1)
         
-        encoded = CBOR.encode(["hello", "my", "friend"] as NSArray)
-        XCTAssertNotNil(encoded)
+        guard let encoded2 = try? CBOR.encode(["hello", "my", "friend"]) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded2)
         XCTAssertEqual([0x83, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
                         0x62, 0x6D, 0x79,
-                        0x66, 0x66, 0x72, 0x69, 0x65, 0x6E, 0x64], encoded)
-        
-        var array = [String]()
-        for _ in 0..<8 {
-            array.append("hello")
-            array.append("my")
-            array.append("friend")
-        }
-        
-        var hexArray:[UInt8] = [0x98, 0x18]
-        for _ in 0..<8 {
-            hexArray.append(contentsOf: [0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F])
-            hexArray.append(contentsOf: [0x62, 0x6D, 0x79])
-            hexArray.append(contentsOf: [0x66, 0x66, 0x72, 0x69, 0x65, 0x6E, 0x64])
-        }
-        
-        encoded = CBOR.encode(array as NSArray)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual(hexArray, encoded)
+                        0x66, 0x66, 0x72, 0x69, 0x65, 0x6E, 0x64], encoded2)
     }
     
-    func test_3_encodeNumberArray() {
-        var encoded = CBOR.encode([10] as NSArray)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x81, 0x0A], encoded)
+    func testEncodeNumberArray() {
+        guard let encoded1 = try? CBOR.encode([10]) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded1)
+        XCTAssertEqual([0x81, 0x0A], encoded1)
         
-        encoded = CBOR.encode([10, 15, -9] as NSArray)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x83, 0x0A, 0x0F, 0x28], encoded)
+        guard let encoded2 = try? CBOR.encode([10, 15, -9]) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded2)
+        XCTAssertEqual([0x83, 0x0A, 0x0F, 0x28], encoded2)
     }
-    
+ 
     func test_4_encodeArrayArray() {
-        var encoded = CBOR.encode([[10]] as NSArray)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x81, 0x81, 0x0A], encoded)
+        guard let encoded1 = try? CBOR.encode([[10]]) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded1)
+        XCTAssertEqual([0x81, 0x81, 0x0A], encoded1)
         
-        encoded = CBOR.encode([[10], [-9, 0]] as NSArray)
-        XCTAssertNotNil(encoded)
-        XCTAssertEqual([0x82, 0x81, 0x0A, 0x82, 0x28, 0x00], encoded)
+        guard let encoded2 = try? CBOR.encode([[10], [-9, 0]]) else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(encoded2)
+        XCTAssertEqual([0x82, 0x81, 0x0A, 0x82, 0x28, 0x00], encoded2)
     }
-    
-    func test_5_encodeMapArray() {
-        let encoded = CBOR.encode([["surename":"shahbazi", "name":"hassan", "age":27]] as NSArray)
+/*    
+    func testEncodeMapArray() {
+        guard let encoded = try? CBOR.encode([["surename":"shahbazi", "name":"hassan", "age":27]]) else {
+            return XCTFail()
+        }
         XCTAssertNotNil(encoded)
         XCTAssertEqual([0x81, 0xA3, 0x63, 0x61, 0x67, 0x65,
                         0x18, 0x1B,

@@ -1,18 +1,19 @@
 import Foundation
 
-public enum CBORError: Error {
-    case EncodedNilResult
-    case ValueTypeNotSupported
+public protocol CBOREncodable {
+    var encode: String { get }
 }
 
-public struct CBOR<T> {
+public protocol CBORDecodable {
+    var decode: CBOREncodable { get }
+}
+
+public struct CBOR<T: CBOREncodable & CBORDecodable> {
     public static func encode(_ value: T) throws -> [UInt8] {
-        if let parameter = value as? Int {
-            return try encodeInt(parameter)
-        } else if let parameter = value as? String {
-            return try encodeString(parameter)
+        guard let encode = value.encode.data?.bytes else {
+            throw CBORError.EncodedNilResult
         }
-        throw CBORError.ValueTypeNotSupported
+        return encode
     }
 
     public static func decode(_ value: [UInt8]) -> T {
@@ -23,18 +24,7 @@ public struct CBOR<T> {
     }
 }
 
-private extension CBOR {
-    static func encodeInt(_ value: Int) throws -> [UInt8] {
-        guard let encode = value.encode.data?.bytes else {
-            throw CBORError.EncodedNilResult
-        }
-        return encode
-    }
-
-    static func encodeString(_ value: String) throws -> [UInt8] {
-        guard let encode = value.encode.data?.bytes else {
-            throw CBORError.EncodedNilResult
-        }
-        return encode
-    }
+public enum CBORError: Error {
+    case EncodedNilResult
+    case ValueTypeNotSupported
 }

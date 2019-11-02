@@ -6,13 +6,13 @@ class CBORSwiftTests: XCTestCase {
     
     func testSetMajorType() {
         let major1 = MajorTypes(.major0)
-        XCTAssertEqual(Data(bytes: [0x00, 0x00, 0x00]), major1.typeData)
+        XCTAssertEqual(Data([0x00, 0x00, 0x00]), major1.typeData)
         
         let major2 = MajorTypes(.major1)
-        XCTAssertEqual(Data(bytes: [0x00, 0x00, 0x01]), major2.typeData)
+        XCTAssertEqual(Data([0x00, 0x00, 0x01]), major2.typeData)
         
         let major3 = MajorTypes(.major5)
-        XCTAssertEqual(Data(bytes: [0x01, 0x00, 0x01]), major3.typeData)
+        XCTAssertEqual(Data([0x01, 0x00, 0x01]), major3.typeData)
     }
     
     func testConvertions() {
@@ -23,15 +23,6 @@ class CBORSwiftTests: XCTestCase {
         XCTAssertEqual(1945556570866200672, binary.byteArrayCharacters.binary_decimal)
     }
 
-    /*
-    func testGenericCBOR() {
-        XCTAssertEqual([], CBOR.encode(1))
-        XCTAssertEqual([0x00, 0x01], CBOR.encode("Hassan"))
-
-        XCTAssertEqual("Hassan", CBOR.decode([0x00, 0x01]) as String)
-        XCTAssertEqual(1, CBOR.decode([]))
-    }
-    */
     /*
     func testFinalComprehensiveTest_Encode() {
         let id_1 = NSByteString("687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141".lowercased())
