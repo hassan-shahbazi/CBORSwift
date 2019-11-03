@@ -7,7 +7,7 @@ protocol CBOREncodableStruct: Encodable {
 extension CBOREncodableStruct {
     func dictionary(from data: Data) throws -> Dictionary<AnyHashable,AnyHashable?> {
         guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<AnyHashable,AnyHashable?> else {
-            throw CBORError.EncodedNilResult
+            throw CBORError.encodedResultNil
         }
         return dictionary
     }
@@ -15,7 +15,7 @@ extension CBOREncodableStruct {
     func encode() throws -> [UInt8] {
         let encodedStructure = try JSONEncoder().encode(self)
         guard let encode = try dictionary(from: encodedStructure).encode.data?.bytes else {
-            throw CBORError.EncodedNilResult
+            throw CBORError.encodedResultNil
         }
         return encode
     }

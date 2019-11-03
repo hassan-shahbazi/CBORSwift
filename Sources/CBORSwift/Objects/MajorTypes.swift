@@ -23,7 +23,7 @@ struct MajorType {
         return Data(bytes[bytes.count-3..<bytes.count])
     }
 
-    public var typeEnum: (([UInt8]) -> MajorTypes?) = { byteArray in
+    public static var typeEnum: (([UInt8]) -> MajorTypes?) = { byteArray in
         return MajorTypes(rawValue: byteArray[..<3].map { "\($0)" }.joined(separator: ""))
     }
 }

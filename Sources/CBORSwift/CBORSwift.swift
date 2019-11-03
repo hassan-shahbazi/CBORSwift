@@ -1,30 +1,22 @@
 import Foundation
 
-public protocol CBOREncodable {
-    var encode: String { get }
-}
-
-public protocol CBORDecodable {
-    var decode: CBOREncodable { get }
-}
-
 public struct CBOR {
     public static func encode<T: CBOREncodable>(_ value: T) throws -> [UInt8] {
         guard let encode = value.encode.data?.bytes else {
-            throw CBORError.EncodedNilResult
+            throw CBORError.encodedResultNil
         }
         return encode
     }
 
-    public static func decode<T: CBORDecodable, U: CBOREncodable>(_ value: T) -> U.Type {
-        if T.self == String.self {
-            return "Hassan" as! U.Type
+    public static func decode<T: CBORDecodable, U: CBOREncodable>(_ value: T) throws -> U {
+        guard let decode = value.decode as? U else {
+            throw CBORError.decodeResultNil
         }
-        return 1 as! U.Type
+        return decode
     }
 }
 
 public enum CBORError: Error {
-    case EncodedNilResult
-    case ValueTypeNotSupported
+    case encodedResultNil
+    case decodeResultNil
 }
