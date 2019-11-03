@@ -10,8 +10,6 @@ extension AnyHashable: CBOREncodable {
             return value.encode
         } else if let value = self as? String {
             return value.encode
-        } else if let value = self as? Data {
-            return value.encode
         } else if let value = self as? TaggedValue {
             return value.encode
         } else if let value = self as? Dictionary<AnyHashable,AnyHashable> {
@@ -53,12 +51,6 @@ extension ByteString: CBOREncodable {
 extension String: CBOREncodable {
     public var encode: String {
         return Data(CBOREncoder.byteArray(.major3, self.count)).binary_decimal.hex + Data(self.ascii_bytes).hex
-    }
-}
-
-extension Data: CBOREncodable {
-    public var encode: String {
-        return Data(CBOREncoder.byteArray(.major2, self.count)).binary_decimal.hex
     }
 }
 
