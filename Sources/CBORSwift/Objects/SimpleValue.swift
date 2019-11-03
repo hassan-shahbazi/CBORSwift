@@ -41,4 +41,16 @@ public struct SimpleValue {
         let bytes = value.code.byteArrayCharacters
         return Data(bytes[3..<bytes.count])
     }
+
+    public static var valueEnum: (([UInt8])-> SimpleValues?) = { byteArray in
+        let bytes = Data(byteArray).hex.hex_decimal.decimal_binary
+        switch (bytes[3..<bytes.count].map { "\($0)" }.joined(separator: "")) {
+        case SimpleValues.false.code:
+            return SimpleValues.false
+        case SimpleValues.true.code:
+            return SimpleValues.true
+        default:
+            return SimpleValues.null
+        }
+    }
 }

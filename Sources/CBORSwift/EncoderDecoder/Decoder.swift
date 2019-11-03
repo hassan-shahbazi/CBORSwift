@@ -35,7 +35,10 @@ extension Array: CBORDecodable where Element == UInt8 {
         case .major6:
             return nil
         case .major7:
-            return nil
+            let (decode, newBody) = Bool.decode(headerByte, bodyByteArray, ofType: Bool.self)
+            bodyByteArray = newBody
+
+            return decode
         }
     }
 }
@@ -71,6 +74,16 @@ extension String: CBORDecodableExtension {
     }
 }
 
+extension Bool: CBORDecodableExtension {
+    static func decode<T>(_ header: UInt8, _ body: [UInt8], baseTag: Int, ofType type: T.Type) -> (T, [UInt8]) {
+        switch SimpleValue.valueEnum([header]) {
+        case .false: return (false, body) as! (T, [UInt8])
+        case .true: return (true, body) as! (T, [UInt8])
+        default:
+            fatalError("Not supported value")
+        }
+    }
+}
 
 // extension Dictionary: CBORDecodable where Key: CBORDecodable, Value: CBORDecodable {
 //     public var decode: CBOREncodable {

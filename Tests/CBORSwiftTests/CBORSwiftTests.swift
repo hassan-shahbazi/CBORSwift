@@ -16,11 +16,11 @@ class CBORSwiftTests: XCTestCase {
     }
     
     func testConvertions() {
-        var binary = "111111111111111111111111111111111111111111111111111111111111111"
-        XCTAssertEqual(9223372036854775807, binary.byteArrayCharacters.binary_decimal)
+        let binary1 = "111111111111111111111111111111111111111111111111111111111111111"
+        XCTAssertEqual(9223372036854775807, binary1.byteArrayCharacters.binary_decimal)
         
-        binary = "0001101100000000000000010110010010101000111010000011000001100000"
-        XCTAssertEqual(1945556570866200672, binary.byteArrayCharacters.binary_decimal)
+        let binary2 = "0001101100000000000000010110010010101000111010000011000001100000"
+        XCTAssertEqual(1945556570866200672, binary2.byteArrayCharacters.binary_decimal)
     }
 
     /*

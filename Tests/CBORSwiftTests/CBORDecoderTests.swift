@@ -416,16 +416,21 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertEqual(921, (decoded as? NSTag)?.tagValue())
         XCTAssertEqual("687134968222EC17202E42505F8ED2B16AE22F16BB05B88C25DB9E602645F141".lowercased() as NSString, (decoded as? NSTag)?.objectValue())
     }
-    
+ */
+
     //MARK:- Simple Value encoding
-    func test_2_decodeSimpleBool() {
-        var decoded = CBOR.decode([0xF4])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual(false, decoded as? NSNumber)
-        
-        decoded = CBOR.decode([0xF5])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual(true, decoded as? NSNumber)
+    func testDecodeSimpleBool() {
+        guard let decoded1 = try? CBOR.decode([0xF4]) as Bool else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded1)
+        XCTAssertFalse(decoded1)
+
+        guard let decoded2 = try? CBOR.decode([0xF5]) as Bool else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded2)
+        XCTAssertTrue(decoded2)
     }
-*/
+
 }
