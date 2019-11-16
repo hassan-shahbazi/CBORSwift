@@ -310,58 +310,52 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertNotNil(decoded3)
         XCTAssertEqual("a simple string with a large length, trying to test all possible situations. Thus, I have to double this string. a simple string with a large length, trying to test all possible situations. Thus, I have to double this string. a simple string with a large length, trying to test all possible situations. Thus, I have to double this string", decoded3)
     }
-/*
-    //MARK:- Array decoding
-    func test_2_decodeStringArray() {
-        var decoded = CBOR.decode([0x81, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual(["hello"], decoded as? NSArray)
 
-        decoded = CBOR.decode([0x83, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
-                                      0x62, 0x6D, 0x79,
-                                      0x66, 0x66, 0x72, 0x69, 0x65, 0x6E, 0x64])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual(["hello", "my", "friend"], decoded as? NSArray)
-        
-        var array = [String]()
-        for _ in 0..<8 {
-            array.append("hello")
-            array.append("my")
-            array.append("friend")
+    //MARK:- Array decoding
+    func testDecodeStringArray() {
+        guard let decoded1 = try? CBOR.decode([0x81, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F]) as [String] else {
+            return XCTFail()
         }
-        
-        var hexArray:[UInt8] = [0x98, 0x18]
-        for _ in 0..<8 {
-            hexArray.append(contentsOf: [0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F])
-            hexArray.append(contentsOf: [0x62, 0x6D, 0x79])
-            hexArray.append(contentsOf: [0x66, 0x66, 0x72, 0x69, 0x65, 0x6E, 0x64])
+        XCTAssertNotNil(decoded1)
+        XCTAssertEqual(["hello"], decoded1)
+
+        guard let decoded2 = try? CBOR.decode([0x83, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
+                                                0x62, 0x6D, 0x79,
+                                                0x66, 0x66, 0x72, 0x69, 0x65, 0x6E, 0x64]) as [String] else {
+            return XCTFail()
         }
-        
-        decoded = CBOR.decode(hexArray)
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual(array, (decoded as? NSArray) as? [String])
+        XCTAssertNotNil(decoded2)
+        XCTAssertEqual(["hello", "my", "friend"], decoded2)
     }
     
     func test_3_decodeNumberArray() {
-        var decoded = CBOR.decode([0x81, 0x0A])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual([10], decoded as? NSArray)
-        
-        decoded = CBOR.decode([0x83, 0x0A, 0x0F, 0x28])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual([10, 15, -9], decoded as? NSArray)
+        guard let decoded1 = try? CBOR.decode([0x81, 0x0A]) as [Int] else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded1)
+        XCTAssertEqual([10], decoded1)
+
+        guard let decoded2 = try? CBOR.decode([0x83, 0x0A, 0x0F, 0x28]) as [Int] else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded2)
+        XCTAssertEqual([10, 15, -9], decoded2)
     }
     
     func test_3_decodeArrayArray() {
-        var decoded = CBOR.decode([0x81, 0x81, 0x0A])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual([[10]], decoded as? NSArray)
+        guard let decoded1 = try? CBOR.decode([0x81, 0x81, 0x0A]) as [[Int]] else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded1)
+        XCTAssertEqual([[10]], decoded1)
         
-        decoded = CBOR.decode([0x82, 0x81, 0x0A, 0x82, 0x28, 0x00])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual([[10], [-9, 0]], decoded as? NSArray)
+        guard let decoded2 = try? CBOR.decode([0x82, 0x81, 0x0A, 0x82, 0x28, 0x00]) as [[Int]] else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded2)
+        XCTAssertEqual([[10], [-9, 0]], decoded2)
     }
-
+/*
     //MARK:- Map decoding
     func test_2_decodeMap() {
         var decoded = CBOR.decode([0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
