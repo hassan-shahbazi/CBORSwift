@@ -18,12 +18,13 @@ struct CBORDecoder {
         case 26:
             return ([0, 1, 2, 3].reduce(into: "") { (result: inout String, index: Int) in
                         result += Int(body[index]).hex
-                    }.hex_decimal, [UInt8](body[3..<body.count]))
+                    }.hex_decimal, [UInt8](body[4..<body.count]))
         case 27:
             return ([0, 1, 2, 3, 4].reduce(into: "") { (result: inout String, index: Int) in
                         result += Int(body[index]).hex
-                    }.hex_decimal, [UInt8](body[4..<body.count]))
+                    }.hex_decimal, [UInt8](body[5..<body.count]))
         default:
+            print(header)
             fatalError("Unacceptable header value")
         }
     }

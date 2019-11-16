@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ByteString {
+public struct ByteString: Hashable {
     public let string: String
 
     public init(_ string: String) {

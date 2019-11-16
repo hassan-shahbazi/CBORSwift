@@ -33,7 +33,7 @@ extension Array: CBORDecodable where Element == UInt8 {
         case .major5:
             return Dictionary<AnyHashable,AnyHashable>.decode(headerByte, bodyByteArray, ofType: Dictionary<AnyHashable,AnyHashable>.self)
         case .major6:
-            return (nil, [])
+            return TaggedValue.decode(headerByte, bodyByteArray, ofType: TaggedValue.self)
         case .major7:
             return Bool.decode(headerByte, bodyByteArray, ofType: Bool.self)
         }
@@ -46,24 +46,24 @@ protocol CBORDecodableExtension {
 
 extension Int: CBORDecodableExtension {
     static func decode<T>(_ header: UInt8, _ body: [UInt8], ofType type: T.Type) -> (T, [UInt8]) {
-        let (value, body) = CBORDecoder.extractHeaderBody(header: Int(header) % 32, body: body)
-        return (value, ([UInt8](body[..<body.count]))) as! (T, [UInt8])
+        let (value, newBody) = CBORDecoder.extractHeaderBody(header: Int(header) % 32, body: body)
+        return (value, ([UInt8](newBody[..<newBody.count]))) as! (T, [UInt8])
     }
 }
 
 extension ByteString: CBORDecodableExtension {
     static func decode<T>(_ header: UInt8, _ body: [UInt8], ofType type: T.Type) -> (T, [UInt8]) {
-        let (offset, body) = CBORDecoder.extractHeaderBody(header: Int(header) % 64, body: body)
-        let value = [UInt8](body[..<offset])
-        return (ByteString(Data(value).hex), ([UInt8](body[value.count..<body.count]))) as! (T, [UInt8])
+        let (offset, newBody) = CBORDecoder.extractHeaderBody(header: Int(header) % 64, body: body)
+        let value = [UInt8](newBody[..<offset])
+        return (ByteString(Data(value).hex), ([UInt8](newBody[value.count..<newBody.count]))) as! (T, [UInt8])
     }
 }
 
 extension String: CBORDecodableExtension {
     static func decode<T>(_ header: UInt8, _ body: [UInt8], ofType type: T.Type) -> (T, [UInt8]) {
-        let (offset, body) = CBORDecoder.extractHeaderBody(header: Int(header) % 96, body: body)
-        let value = [UInt8](body[..<offset])
-        return (Data(value).string, ([UInt8](body[value.count..<body.count]))) as! (T, [UInt8])
+        let (offset, newBody) = CBORDecoder.extractHeaderBody(header: Int(header) % 96, body: body)
+        let value = [UInt8](newBody[..<offset])
+        return (Data(value).string, ([UInt8](newBody[value.count..<newBody.count]))) as! (T, [UInt8])
     }
 }
 
@@ -80,16 +80,16 @@ extension Bool: CBORDecodableExtension {
 
 extension Dictionary: CBORDecodableExtension where Key: CBOREncodable, Value: CBOREncodable {
     static func decode<T>(_ header: UInt8, _ body: [UInt8], ofType type: T.Type) -> (T, [UInt8]) {
-        var (offset, body) = CBORDecoder.extractHeaderBody(header: Int(header) % 160, body: body)
+        var (offset, newBody) = CBORDecoder.extractHeaderBody(header: Int(header) % 160, body: body)
         return (Array<Int>(0..<offset).reduce(into: [:]) { (result: inout [AnyHashable:AnyHashable], index: Int) in
-            let (keyResponse, keyNextBody) = body.decoder
+            let (keyResponse, keyNextBody) = newBody.decoder
             if keyNextBody.count > 0 {
-                body = keyNextBody
+                newBody = keyNextBody
             }
 
-            let (valueResponse, valueNextBody) = body.decoder
+            let (valueResponse, valueNextBody) = newBody.decoder
             if valueNextBody.count > 0 {
-                body = valueNextBody
+                newBody = valueNextBody
             }
             
             if let key = keyResponse as? AnyHashable, let value = valueResponse as? AnyHashable {
@@ -100,20 +100,12 @@ extension Dictionary: CBORDecodableExtension where Key: CBOREncodable, Value: CB
 
 }
 
-// extension SimpleValue: CBORDecodable {
-//     public var decode: CBOREncodable {
-//         return SimpleValue(.null)
-//     }
-// }
-
-// extension TaggedValue: CBORDecodable {
-//     public var decode: CBOREncodable {
-//         return TaggedValue(tag: 5, 10)
-//     }
-// }
-
-// extension Decodable: CBORDecodable {
-//     public var encode: Encodable {
-//         return ""
-//     }
-// }
+extension TaggedValue: CBORDecodableExtension {
+    static func decode<T>(_ header: UInt8, _ body: [UInt8], ofType type: T.Type) -> (T, [UInt8]) {
+        let (tag, newBody) = CBORDecoder.extractHeaderBody(header: Int(header) % 192, body: body)
+        if let value = newBody.decode as? AnyHashable {
+            return (TaggedValue(tag: tag, value), newBody) as! (T, [UInt8])
+        }
+        fatalError("Error in decoding tagged value")
+    }
+}
