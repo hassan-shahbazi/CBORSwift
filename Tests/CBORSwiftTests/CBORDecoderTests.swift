@@ -328,7 +328,7 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertEqual(["hello", "my", "friend"], decoded2)
     }
     
-    func test_3_decodeNumberArray() {
+    func testDecodeNumberArray() {
         guard let decoded1 = try? CBOR.decode([0x81, 0x0A]) as [Int] else {
             return XCTFail()
         }
@@ -342,7 +342,7 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertEqual([10, 15, -9], decoded2)
     }
     
-    func test_3_decodeArrayArray() {
+    func testDecodeArrayArray() {
         guard let decoded1 = try? CBOR.decode([0x81, 0x81, 0x0A]) as [[Int]] else {
             return XCTFail()
         }
@@ -355,31 +355,37 @@ class CBORDecoderTests: XCTestCase {
         XCTAssertNotNil(decoded2)
         XCTAssertEqual([[10], [-9, 0]], decoded2)
     }
-/*
+
     //MARK:- Map decoding
-    func test_2_decodeMap() {
-        var decoded = CBOR.decode([0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
-                                          0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual(["hello": "world"], decoded as? NSDictionary)
+    func testDecodeMap() {
+        guard let decoded1 = try? CBOR.decode([0xA1, 0x65, 0x68, 0x65, 0x6C, 0x6C, 0x6F,
+                                          0x65, 0x77, 0x6F, 0x72, 0x6C, 0x64]) as [String:String] else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded1)
+        XCTAssertEqual(["hello": "world"], decoded1)
 
-        decoded = CBOR.decode([0xA2, 0x64, 0x6E, 0x61, 0x6D, 0x65,
-                                      0x66, 0x68, 0x61, 0x73, 0x73, 0x61, 0x6E,
-                                      0x64, 0x73, 0x75, 0x72, 0x65,
-                                      0x68, 0x73, 0x68, 0x61, 0x68, 0x62, 0x61, 0x7A, 0x69])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual(["sure":"shahbazi", "name":"hassan"], decoded as? NSDictionary)
+        guard let decoded2 = try? CBOR.decode([0xA2, 0x64, 0x6E, 0x61, 0x6D, 0x65,
+                                                0x66, 0x68, 0x61, 0x73, 0x73, 0x61, 0x6E,
+                                                0x64, 0x73, 0x75, 0x72, 0x65,
+                                                0x68, 0x73, 0x68, 0x61, 0x68, 0x62, 0x61, 0x7A, 0x69]) as [String:String] else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded2)
+        XCTAssertEqual(["sure":"shahbazi", "name":"hassan"], decoded2)
 
-        decoded = CBOR.decode([0xA4, 0x05, 0x66, 0x6E, 0x75, 0x6D, 0x62, 0x65, 0x72,
+        guard let decoded3 = try? CBOR.decode([0xA4, 0x05, 0x66, 0x6E, 0x75, 0x6D, 0x62, 0x65, 0x72,
                                       0x12, 0x18, 0x62,
                                       0x65, 0x69, 0x74, 0x65, 0x6D, 0x30,
                                       0x18, 0x7F,
                                       0x65, 0x69, 0x74, 0x65, 0x6D, 0x31,
-                                      0x66, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67])
-        XCTAssertNotNil(decoded)
-        XCTAssertEqual(["item0": 127, "item1": "string", 5: "number", 18: 98], decoded as? NSDictionary)
+                                      0x66, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67]) as [AnyHashable:AnyHashable] else {
+            return XCTFail()
+        }
+        XCTAssertNotNil(decoded3)
+        XCTAssertEqual(["item0": 127, "item1": "string", 5: "number", 18: 98], decoded3)
     }
-
+/*
     //MARK:- Tagged Value decoding
     func test_2_decodeTaggedValue() {
         var decoded = CBOR.decode([0xC5, 0x0A])

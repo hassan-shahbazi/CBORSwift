@@ -5,7 +5,7 @@ extension Array: CBORDecodable where Element == UInt8 {
         return decoder.0
     }
 
-    private var decoder: (CBOREncodable?, [UInt8]) {
+    var decoder: (CBOREncodable?, [UInt8]) {
         guard let headerByte = self.first, let major = MajorType.typeEnum(Int(headerByte).decimal_binary) else { return (nil, []) }
         let bodyByteArray = [UInt8](self[1..<self.count])
 
@@ -20,18 +20,18 @@ extension Array: CBORDecodable where Element == UInt8 {
         case .major3:
             return String.decode(headerByte, bodyByteArray, ofType: String.self)
         case .major4:
-            var (offset, newBody) = CBORDecoder.extractHeaderBody(header: Int(headerByte) % 128, body: bodyByteArray)
+            var (offset, body) = CBORDecoder.extractHeaderBody(header: Int(headerByte) % 128, body: bodyByteArray)
             return (Array<Int>(0..<offset).reduce(into: []) { (result: inout [AnyHashable], index: Int) in
-                    let (internalResponse, internalNextBodyIteration) = newBody.decoder
+                    let (internalResponse, nextBody) = body.decoder
                     if let response = internalResponse as? AnyHashable {
                         result.append(response)
                     }
-                    if internalNextBodyIteration.count > 0 {
-                        newBody = internalNextBodyIteration
+                    if nextBody.count > 0 {
+                        body = nextBody
                     }
-            }, newBody)
+            }, body)
         case .major5:
-            return (nil, [])
+            return Dictionary<AnyHashable,AnyHashable>.decode(headerByte, bodyByteArray, ofType: Dictionary<AnyHashable,AnyHashable>.self)
         case .major6:
             return (nil, [])
         case .major7:
@@ -78,11 +78,27 @@ extension Bool: CBORDecodableExtension {
     }
 }
 
-// extension Dictionary: CBORDecodable where Key: CBORDecodable, Value: CBORDecodable {
-//     public var decode: CBOREncodable {
-//         return ["11":"11"]
-//     }
-// }
+extension Dictionary: CBORDecodableExtension where Key: CBOREncodable, Value: CBOREncodable {
+    static func decode<T>(_ header: UInt8, _ body: [UInt8], ofType type: T.Type) -> (T, [UInt8]) {
+        var (offset, body) = CBORDecoder.extractHeaderBody(header: Int(header) % 160, body: body)
+        return (Array<Int>(0..<offset).reduce(into: [:]) { (result: inout [AnyHashable:AnyHashable], index: Int) in
+            let (keyResponse, keyNextBody) = body.decoder
+            if keyNextBody.count > 0 {
+                body = keyNextBody
+            }
+
+            let (valueResponse, valueNextBody) = body.decoder
+            if valueNextBody.count > 0 {
+                body = valueNextBody
+            }
+            
+            if let key = keyResponse as? AnyHashable, let value = valueResponse as? AnyHashable {
+                result[key] = value
+            }
+        }, body) as! (T, [UInt8])
+    }
+
+}
 
 // extension SimpleValue: CBORDecodable {
 //     public var decode: CBOREncodable {
